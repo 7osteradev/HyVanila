@@ -200,8 +200,8 @@ func CreateTempFile(pattern string) (string, error) {
 func DownloadLatestReleaseAsset(ctx context.Context, assetName, dest string, callback func(stage string, progress float64, message string, currentFile string, speed string, downloaded, total int64)) error {
 	// This would fetch from GitHub releases API
 	// For now, use a direct URL pattern
-	owner := "ArchDevs"
-	repo := "HyLauncher"
+	owner := "yyyumeniku"
+	repo := "HyPrism"
 	
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest/download/%s", owner, repo, assetName)
 	

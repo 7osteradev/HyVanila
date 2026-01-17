@@ -167,7 +167,64 @@ jobs:
         with:
           path: artifacts
       
+      - name: Create version.json for auto-updater
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          cat > artifacts/version.json << EOF
+          {
+            "version": "$VERSION",
+            "linux": {
+              "amd64": {
+                "launcher": {
+                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/v$VERSION/HyPrism-x86_64.AppImage",
+                  "sha256": ""
+                },
+                "helper": {
+                  "url": "",
+                  "sha256": ""
+                }
+              }
+            },
+            "windows": {
+              "amd64": {
+                "launcher": {
+                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/v$VERSION/HyPrism.exe",
+                  "sha256": ""
+                },
+                "helper": {
+                  "url": "",
+                  "sha256": ""
+                }
+              }
+            },
+            "darwin": {
+              "amd64": {
+                "launcher": {
+                  "url": "",
+                  "sha256": ""
+                },
+                "helper": {
+                  "url": "",
+                  "sha256": ""
+                }
+              },
+              "arm64": {
+                "launcher": {
+                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/v$VERSION/HyPrism-macOS-arm64.dmg",
+                  "sha256": ""
+                },
+                "helper": {
+                  "url": "",
+                  "sha256": ""
+                }
+              }
+            }
+          }
+          EOF
+      
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/**/*
+          files: |
+            artifacts/**/*
+            artifacts/version.json

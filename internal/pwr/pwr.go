@@ -107,11 +107,11 @@ func ApplyPWR(ctx context.Context, pwrFile string, progressCallback func(stage s
 	fmt.Printf("Game directory: %s\n", gameDir)
 	
 	// Run butler apply with staging directory (like Hytale-F2P does)
-	// Add --no-save-interval to avoid checkpoint file issues on Windows
+	// Use --save-interval=0 to disable checkpoints and avoid Windows rename issues
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		// On Windows, disable save interval to avoid checkpoint rename issues
-		cmd = exec.CommandContext(ctx, butlerPath, "apply", "--staging-dir", stagingDir, "--no-save-interval", pwrFile, gameDir)
+		// On Windows, use longer save interval to reduce checkpoint file operations
+		cmd = exec.CommandContext(ctx, butlerPath, "apply", "--staging-dir", stagingDir, "--save-interval=60", pwrFile, gameDir)
 	} else {
 		cmd = exec.CommandContext(ctx, butlerPath, "apply", "--staging-dir", stagingDir, pwrFile, gameDir)
 	}
