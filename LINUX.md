@@ -1,52 +1,18 @@
 # Linux Installation Guide
 
-HyPrism on Linux requires WebKitGTK 4.0 to run. Due to varying library versions across distributions, we recommend using Flatpak for the most reliable experience.
+HyPrism on Linux requires WebKitGTK 4.0 to run. We provide AppImage and tar.gz packages for easy installation.
 
-## Recommended: Flatpak Installation
+## Recommended: AppImage
 
-Flatpak bundles all dependencies, avoiding library version conflicts.
+AppImage is a portable format that works on most Linux distributions.
 
 ### Prerequisites
 
-Install Flatpak if not already installed:
+Install WebKitGTK 4.0:
 
 ```bash
 # Ubuntu/Debian
-sudo apt install flatpak
-
-# Fedora
-sudo dnf install flatpak
-
-# Arch Linux
-sudo pacman -S flatpak
-```
-
-### Install HyPrism
-
-Download the latest `.flatpak` file from [releases](https://github.com/yyyumeniku/HyPrism/releases/latest) and install:
-
-```bash
-flatpak install HyPrism.flatpak
-```
-
-### Run HyPrism
-
-```bash
-flatpak run dev.hyprism.HyPrism
-```
-
-## Alternative: AppImage
-
-### Prerequisites
-
-Install WebKitGTK 4.0 (version 2.40+ recommended):
-
-```bash
-# Ubuntu 24.04+
 sudo apt install libwebkit2gtk-4.0-37
-
-# Ubuntu 22.04 or older
-sudo apt install libwebkit2gtk-4.0-dev
 
 # Fedora
 sudo dnf install webkit2gtk4.0
@@ -55,47 +21,56 @@ sudo dnf install webkit2gtk4.0
 sudo pacman -S webkit2gtk-4.1
 ```
 
-### Run AppImage
+### Install & Run
 
 1. Download `HyPrism-x86_64.AppImage` from [releases](https://github.com/yyyumeniku/HyPrism/releases/latest)
 2. Make it executable: `chmod +x HyPrism-x86_64.AppImage`
 3. Run: `./HyPrism-x86_64.AppImage`
 
+## Alternative: Binary (tar.gz)
+
+If AppImage doesn't work, use the standalone binary:
+
+1. Download `HyPrism-linux-x86_64.tar.gz` from [releases](https://github.com/yyyumeniku/HyPrism/releases/latest)
+2. Extract: `tar -xzf HyPrism-linux-x86_64.tar.gz`
+3. Run: `./HyPrism`
+
 ## Troubleshooting
-
-### AppImage won't launch (SteamOS/Steam Deck)
-
-SteamOS has strict AppImage sandboxing. Use Flatpak instead:
-
-```bash
-flatpak install HyPrism.flatpak
-flatpak run dev.hyprism.HyPrism
-```
 
 ### "libwebkit2gtk-4.0.so.37: cannot open shared object file"
 
-Your system is missing WebKitGTK. Install it using the commands above for your distribution, or switch to Flatpak.
+Your system is missing WebKitGTK. Install it using the commands above for your distribution.
 
-### Game launches but crashes on world load
+### AppImage won't launch
 
-This may be a memory/heap corruption issue. Try:
+Try extracting and running directly:
+```bash
+./HyPrism-x86_64.AppImage --appimage-extract
+./squashfs-root/AppRun
+```
+
+Or use the tar.gz binary instead.
+
+### Game launches but crashes
+
 1. Update to the latest HyPrism release
 2. Ensure you have the latest graphics drivers
-3. Use Flatpak, which isolates the runtime environment
+3. Check if WebKitGTK version is 2.40 or newer
 
-### Update checker shows 404 error
+## SteamOS / Steam Deck
 
-Fixed in recent releases. Update to v1.0.8 or later, which includes `version.json` in releases.
+For Steam Deck, use Desktop Mode and run the AppImage:
+
+```bash
+chmod +x HyPrism-x86_64.AppImage
+./HyPrism-x86_64.AppImage
+```
+
+If AppImage fails, use the tar.gz binary.
 
 ## Building from Source
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions.
-
-## Known Issues
-
-- AppImage may have dependency conflicts on some distributions
-- Older Ubuntu versions may require backports for WebKitGTK 4.0
-- Flatpak is the recommended solution for maximum compatibility
 
 ## Support
 

@@ -162,11 +162,13 @@ func ListInstances() ([]string, error) {
 }
 
 // IsVersionInstalled checks if a specific branch/version is installed
-// It checks if the game client executable exists in the instance
+// It checks if the game client executable exists
 func IsVersionInstalled(branch string, version int) bool {
-	gameDir := GetInstanceGameDir(branch, version)
+	// Game is installed to the legacy path: release/package/game/latest
+	// This matches where InstallGame and Launch actually use
+	gameDir := filepath.Join(GetDefaultAppDir(), "release", "package", "game", "latest")
 	
-	// Check if the instance game directory exists
+	// Check if the game directory exists
 	if _, err := os.Stat(gameDir); os.IsNotExist(err) {
 		return false
 	}
