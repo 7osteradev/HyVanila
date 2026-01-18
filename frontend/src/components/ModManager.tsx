@@ -725,24 +725,24 @@ export const ModManager: React.FC<ModManagerProps> = ({
             <div ref={categoryDropdownRef} className="relative">
               <button
                 onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                className="h-10 px-4 pr-8 rounded-xl bg-white/5 border border-white/10 text-white/80 text-sm hover:border-white/20 flex items-center gap-2"
+                className="h-10 px-4 pr-10 rounded-xl bg-white/5 border border-white/10 text-white/80 text-sm hover:border-white/20 flex items-center gap-2 min-w-[140px] whitespace-nowrap"
               >
-                {getCategoryName()}
+                <span className="truncate">{getCategoryName()}</span>
                 <ChevronDown
                   size={14}
-                  className={`absolute right-3 text-white/40  ${isCategoryDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`absolute right-3 text-white/40 transition-transform ${isCategoryDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {isCategoryDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 z-[100] min-w-[180px] max-h-60 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl overflow-y-auto">
+                <div className="absolute top-full left-0 mt-2 z-[100] min-w-[200px] max-h-60 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl overflow-y-auto">
                   <button
                     onClick={() => {
                       setSelectedCategory(0);
                       setIsCategoryDropdownOpen(false);
                     }}
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-white/10 ${
-                      selectedCategory === 0 ? 'text-[#FFA845]' : 'text-white/70'
+                    className={`w-full px-4 py-2.5 text-sm text-left hover:bg-white/10 transition-colors ${
+                      selectedCategory === 0 ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
                     }`}
                   >
                     All Categories
@@ -754,8 +754,8 @@ export const ModManager: React.FC<ModManagerProps> = ({
                         setSelectedCategory(cat.id);
                         setIsCategoryDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-2 text-sm text-left hover:bg-white/10 ${
-                        selectedCategory === cat.id ? 'text-[#FFA845]' : 'text-white/70'
+                      className={`w-full px-4 py-2.5 text-sm text-left hover:bg-white/10 transition-colors ${
+                        selectedCategory === cat.id ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
                       }`}
                     >
                       {cat.name}

@@ -41,24 +41,24 @@ export const NewsPreview: React.FC<NewsPreviewProps> = ({ getNews }) => {
     };
 
     return (
-        <div className='flex flex-col gap-y-4 max-w-md'>
+        <div className='flex flex-col gap-y-2 max-w-sm'>
             <div className='flex justify-between items-center'>
-                <h2 className='text-white text-lg font-bold'>
+                <h2 className='text-white text-base font-bold'>
                     Latest Hytale News
                 </h2>
                 <button
                     onClick={fetchNews}
                     disabled={loading}
                     className="rounded-lg hover:text-white disabled:opacity-50 transition-colors">
-                    <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+                    <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
                 </button>
             </div>
 
             {loading ?
-                (<div className="flex items-center justify-center py-8">
+                (<div className="flex items-center justify-center py-4">
                     <div className="text-center">
-                        <RefreshCw size={32} className="text-[#FFA845] animate-spin mx-auto mb-3" />
-                        <p className="text-white/70 text-sm">Loading news...</p>
+                        <RefreshCw size={24} className="text-[#FFA845] animate-spin mx-auto mb-2" />
+                        <p className="text-white/70 text-xs">Loading news...</p>
                     </div>
                 </div>)
                 : error ? (
@@ -74,36 +74,36 @@ export const NewsPreview: React.FC<NewsPreviewProps> = ({ getNews }) => {
                         </div>
                     </div>
                 ) :
-                    (<div className='flex flex-col gap-y-3 glass p-4 rounded-xl'>
-                        {news.map((item, index) => {
+                    (<div className='flex flex-col gap-y-2 glass p-3 rounded-xl'>
+                        {news.slice(0, 3).map((item, index) => {
                             return (
                                 <button
                                     key={index}
                                     onClick={() => openLink(item.url)}
                                     disabled={loading}
-                                    className='flex gap-3 group hover:bg-white/5 p-2 rounded-lg transition-all cursor-pointer text-left w-full'
+                                    className='flex gap-2 group hover:bg-white/5 p-1.5 rounded-lg transition-all cursor-pointer text-left w-full'
                                 >
                                     {/* News Image */}
                                     {item.imageUrl && (
                                         <img 
                                             src={item.imageUrl} 
                                             alt={item.title}
-                                            className='w-24 h-16 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition-transform'
+                                            className='w-20 h-14 object-cover rounded-md flex-shrink-0 group-hover:scale-105 transition-transform'
                                         />
                                     )}
                                     {/* News Content */}
-                                    <div className='flex flex-col justify-center min-w-0'>
-                                        <p className='text-[#FFA845] group-hover:underline text-sm font-medium line-clamp-2 mb-1'>
+                                    <div className='flex flex-col justify-center min-w-0 pointer-events-none'>
+                                        <p className='text-[#FFA845] group-hover:underline text-xs font-medium line-clamp-2 mb-0.5'>
                                             {item.title}
                                         </p>
                                         <div className='flex flex-col text-xs'>
-                                            <div className='flex gap-x-1 items-center text-white/60'>
-                                                <User size='12' />
-                                                <p className='truncate'>{item.author}</p>
+                                            <div className='flex gap-x-1 items-center text-white/50'>
+                                                <User size='10' />
+                                                <p className='truncate text-xs'>{item.author}</p>
                                             </div>
-                                            <div className='flex gap-x-1 items-center text-white/60'>
-                                                <Calendar size='12' />
-                                                <p>{item.date}</p>
+                                            <div className='flex gap-x-1 items-center text-white/50'>
+                                                <Calendar size='10' />
+                                                <p className='text-xs'>{item.date}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@ export const NewsPreview: React.FC<NewsPreviewProps> = ({ getNews }) => {
                         })}
                         <button 
                             onClick={() => openLink("https://hytale.com/news")} 
-                            className='w-full font-semibold hover:underline cursor-pointer text-[#FFA845] text-sm mt-1'>
+                            className='w-full font-semibold hover:underline cursor-pointer text-[#FFA845] text-xs mt-0.5'>
                             Read more on hytale.com →
                         </button>
                     </div>)

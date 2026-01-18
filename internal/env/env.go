@@ -196,34 +196,16 @@ func IsVersionInstalled(branch string, version int) bool {
 		return false
 	}
 	
-	// Check for the game client executable
-	var clientPath string
-	switch runtime.GOOS {
-	case "darwin":
-		clientPath = filepath.Join(gameDir, "Client", "Hytale.app", "Contents", "MacOS", "HytaleClient")
-	case "windows":
-		clientPath = filepath.Join(gameDir, "Client", "HytaleClient.exe")
-	default:
-		clientPath = filepath.Join(gameDir, "Client", "HytaleClient")
-	}
-	
-	fmt.Printf("[DEBUG] Checking client at: %s\n", clientPath)
-	
-	if _, err := os.Stat(clientPath); err == nil {
-		fmt.Printf("[DEBUG] Client executable found!\n")
-		return true
-	}
-	
-	// Fallback: check if Client folder exists with any content
+	// Check if Client folder exists with content (simplest check that works)
 	clientDir := filepath.Join(gameDir, "Client")
 	if entries, err := os.ReadDir(clientDir); err == nil && len(entries) > 0 {
-		fmt.Printf("[DEBUG] Client folder has %d entries, considering installed\n", len(entries))
+		fmt.Printf("[DEBUG] Client folder found with %d entries - game is installed\n", len(entries))
 		return true
 	}
 	
-	// Final fallback: check if game directory has any content (at least a few files)
-	if entries, err := os.ReadDir(gameDir); err == nil && len(entries) >= 3 {
-		fmt.Printf("[DEBUG] Game dir has %d entries, considering installed\n", len(entries))
+	// If no Client folder, check if game directory has content (at least a few files/folders)
+	if entries, err := os.ReadDir(gameDir); err == nil && len(entries) >= 2 {
+		fmt.Printf("[DEBUG] Game dir has %d entries - considering installed\n", len(entries))
 		return true
 	}
 	
