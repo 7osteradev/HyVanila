@@ -389,9 +389,9 @@ const App: React.FC = () => {
             onUpdate={handleUpdate}
           />
           {/* Hytale Logo & News - Right Side */}
-          <div className="flex flex-col items-end gap-4">
+          <div className="flex flex-col items-end gap-3">
             <img src={hytaleLogo} alt="Hytale" className="h-24 drop-shadow-2xl" />
-            <NewsPreview getNews={async () => await GetNews(4)} />
+            <NewsPreview getNews={async () => await GetNews(3)} />
           </div>
         </div>
 
