@@ -1,4 +1,4 @@
-<p align="right">
+<p align="left">
   <img src="assets/Hyprism.svg" alt="HyPrism Logo" width="64" height="64" />
 </p>
 
