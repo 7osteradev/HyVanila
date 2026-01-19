@@ -255,19 +255,21 @@ jobs:
             echo ""
             
             # GUI dialog with multiple fallbacks
-            ERROR_MSG="HyPrism requires WebKit2GTK 4.1 to run.
+            read -r -d '' ERROR_MSG <<'EOF'
+            HyPrism requires WebKit2GTK 4.1 to run.
 
-OPTION 1 (Recommended): Use Flatpak
-Download HyPrism.flatpak from the same release.
-It bundles all dependencies - no setup required!
+            OPTION 1 (Recommended): Use Flatpak
+            Download HyPrism.flatpak from the same release.
+            It bundles all dependencies - no setup required!
 
-OPTION 2: Install WebKit on your system
-• Arch:   sudo pacman -S webkit2gtk-4.1
-• Ubuntu: sudo apt install libwebkit2gtk-4.1-0
-• Fedora: sudo dnf install webkit2gtk4.1
+            OPTION 2: Install WebKit on your system
+            • Arch:   sudo pacman -S webkit2gtk-4.1
+            • Ubuntu: sudo apt install libwebkit2gtk-4.1-0
+            • Fedora: sudo dnf install webkit2gtk4.1
 
-Most Linux desktops already have WebKit installed."
-            
+            Most Linux desktops already have WebKit installed.
+            EOF
+
             # Try GUI dialogs in order of preference
             if command -v zenity &> /dev/null; then
               zenity --error --title="HyPrism - Missing Dependency" --text="$ERROR_MSG" --width=500 --no-wrap 2>/dev/null || true
