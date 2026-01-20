@@ -34,7 +34,6 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             const langConfig = LANGUAGE_CONFIG[langCode];
             if (langConfig) {
                 try {
-                    // @ts-ignore
                     const installedMods = await GetInstanceInstalledMods(currentBranch, currentVersion);
                     const hasTranslationMod = installedMods?.some((mod: any) =>
                         mod.name.toLowerCase().includes(langConfig.searchQuery.toLowerCase())
