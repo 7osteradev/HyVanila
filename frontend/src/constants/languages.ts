@@ -26,4 +26,9 @@ export const LANGUAGE_CONFIG: Record<Language, LanguageMetadata> = {
         code: Language.TURKISH,
         searchQuery: 'Türkçe çeviri',
     },
+    [Language.FRENCH]: {
+        name: 'French',
+        nativeName: 'Français',
+        code: Language.FRENCH,
+    },
 };

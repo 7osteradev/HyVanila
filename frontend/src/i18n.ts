@@ -4,6 +4,7 @@ import { Language } from './constants/enums';
 import ru from './locales/ru.json';
 import en from './locales/en.json';
 import tr from './locales/tr.json';
+import fr from './locales/fr.json';
 
 const getSavedLanguage = (): string => {
     const saved = localStorage.getItem('i18nextLng');
@@ -27,6 +28,9 @@ i18n
             },
             [Language.TURKISH]: {
                 translation: tr,
+            },
+            [Language.FRENCH]: {
+                translation: fr,
             },
         },
         lng: getSavedLanguage(),
