@@ -53,9 +53,10 @@ func GetDefaultAppDir() string {
 func CreateFolders() error {
 	appDir := GetDefaultAppDir()
 
+	// List of folders to create in AppData
+	// Note: instances folder is NOT created here - it uses GetInstancesDir() which respects custom directory
 	folders := []string{
 		appDir,
-		filepath.Join(appDir, "instances"),
 		filepath.Join(appDir, "jre"),
 		filepath.Join(appDir, "butler"),
 		filepath.Join(appDir, "cache"),
@@ -64,7 +65,7 @@ func CreateFolders() error {
 		filepath.Join(appDir, "UserData"),
 	}
 
-	// Create instances directory in custom location if configured
+	// Create instances directory in custom location if configured, otherwise in AppData
 	instancesDir := GetInstancesDir()
 	if err := os.MkdirAll(instancesDir, 0755); err != nil {
 		return err
@@ -123,12 +124,13 @@ func GetInstancesDir() string {
 }
 
 // GetInstanceDir returns the directory for a specific instance
-// Format: instances/{branch}-v{version} or instances/latest for auto-updating
+// Format: instances/{branch}-v{version} or instances/{branch}-latest for auto-updating
 func GetInstanceDir(branch string, version int) string {
 	var instanceName string
 	if version == 0 {
 		// Version 0 means "latest" auto-updating instance
-		instanceName = "latest"
+		// Include branch name so release and prerelease have separate latest instances
+		instanceName = fmt.Sprintf("%s-latest", branch)
 	} else {
 		instanceName = fmt.Sprintf("%s-v%d", branch, version)
 	}

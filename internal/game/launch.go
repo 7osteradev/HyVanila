@@ -221,8 +221,10 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 
 	// Add auth tokens if available and in authenticated mode
 	if authMode == "authenticated" && tokens != nil {
+		// When using identity token, also pass username for profile
 		if tokens.IdentityToken != "" {
 			commonArgs = append(commonArgs, "--identity-token", tokens.IdentityToken)
+			commonArgs = append(commonArgs, "--username", opts.PlayerName)
 		}
 		if tokens.SessionToken != "" {
 			commonArgs = append(commonArgs, "--session-token", tokens.SessionToken)
@@ -240,6 +242,19 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 		// Remove all quarantine attributes recursively
 		xattrCmd := exec.Command("xattr", "-cr", appBundlePath)
 		xattrCmd.Run() // Ignore errors
+		
+		// CRITICAL: Remove .original backup files from app bundle before signing
+		// The patcher creates these and they break codesign --deep
+		macOSDir := filepath.Join(appBundlePath, "Contents", "MacOS")
+		if entries, err := os.ReadDir(macOSDir); err == nil {
+			for _, entry := range entries {
+				if strings.HasSuffix(entry.Name(), ".original") {
+					backupPath := filepath.Join(macOSDir, entry.Name())
+					fmt.Printf("Removing backup file before signing: %s\n", entry.Name())
+					os.Remove(backupPath)
+				}
+			}
+		}
 		
 		// Sign with codesign - use ad-hoc signature
 		// Must use --force to overwrite existing signature after patching

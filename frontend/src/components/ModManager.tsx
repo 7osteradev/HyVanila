@@ -186,7 +186,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
 
-  const instanceName = `${currentBranch === GameBranch.RELEASE ? t('Release') : t('Pre-Release')} v${currentVersion}`;
+  const instanceName = `${currentBranch === GameBranch.RELEASE ? t('Release') : t('Pre-Release')} ${currentVersion === 0 ? t('latest') : `v${currentVersion}`}`;
 
   // Filter installed mods by search
   const filteredInstalledMods = useMemo(() => {
