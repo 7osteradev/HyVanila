@@ -10,6 +10,8 @@ import { UpdateOverlay } from './components/UpdateOverlay';
 import { ErrorModal } from './components/ErrorModal';
 import { DeleteConfirmationModal } from './components/DeleteConfirmationModal';
 import { ModManager } from './components/ModManager';
+import { SettingsModal } from './components/SettingsModal';
+import { LogsModal } from './components/LogsModal';
 import hytaleLogo from './assets/logo.png';
 
 import {
@@ -29,10 +31,12 @@ import {
   IsVersionInstalled,
   GetInstalledVersionsForBranch,
   CheckLatestNeedsUpdate,
+  CheckUpdate,
   // Settings
   SelectInstanceDirectory,
   GetNews,
   GetLauncherVersion,
+  GetGameLogs,
 } from '../wailsjs/go/app/App';
 import { EventsOn } from '../wailsjs/runtime/runtime';
 import { NewsPreview } from './components/NewsPreview';
@@ -55,10 +59,13 @@ const App: React.FC = () => {
   const [updateAsset, setUpdateAsset] = useState<any>(null);
   const [isUpdatingLauncher, setIsUpdatingLauncher] = useState<boolean>(false);
   const [updateStats, setUpdateStats] = useState({ d: 0, t: 0 });
+  const [speed, setSpeed] = useState<string>('');
 
   // Modal state
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const [showModManager, setShowModManager] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [showLogs, setShowLogs] = useState<boolean>(false);
   const [modManagerSearchQuery, setModManagerSearchQuery] = useState<string>('');
   const [error, setError] = useState<any>(null);
 
@@ -72,6 +79,10 @@ const App: React.FC = () => {
   const [isCheckingInstalled, setIsCheckingInstalled] = useState<boolean>(false);
   // const [customInstanceDir, setCustomInstanceDir] = useState<string>("");
   const [latestNeedsUpdate, setLatestNeedsUpdate] = useState<boolean>(false);
+
+  // Startup Update Check
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState<boolean>(true);
+  const [blockingUpdate, setBlockingUpdate] = useState<any>(null);
 
   // Check if current version is installed when branch or version changes
   useEffect(() => {
@@ -195,6 +206,21 @@ const App: React.FC = () => {
     // Load saved branch and version - must load branch first, then version
     const loadSettings = async () => {
       try {
+        // Run update check first
+        setIsCheckingUpdate(true);
+        try {
+          // Add a small delay for better UX (so the checking screen doesn't flash too fast)
+          await new Promise(r => setTimeout(r, 1500));
+          const asset = await CheckUpdate();
+          if (asset) {
+            setBlockingUpdate(asset);
+          }
+        } catch (e) {
+          console.error('Failed to check for updates:', e);
+        } finally {
+          setIsCheckingUpdate(false);
+        }
+
         // Get saved branch (defaults to "release" in backend if not set)
         const savedBranch = await GetVersionType();
         const branch = savedBranch || GameBranch.RELEASE;
@@ -245,17 +271,20 @@ const App: React.FC = () => {
     };
     loadSettings();
 
-    // Event listeners
+
+
     const unsubProgress = EventsOn('progress-update', (data: any) => {
       setProgress(data.progress);
       setDownloaded(data.downloaded);
       setTotal(data.total);
+      setSpeed(data.speed);
 
       // When launch stage is received, game is starting
       if (data.stage === 'launch') {
         setIsGameRunning(true);
         setIsDownloading(false);
         setProgress(0);
+        setSpeed('');
 
         // Game is now installed, update state
         setIsVersionInstalled(true);
@@ -395,6 +424,48 @@ const App: React.FC = () => {
   return (
     <div className="relative w-screen h-screen bg-[#090909] text-white overflow-hidden font-sans select-none">
       <BackgroundImage />
+
+      {/* Startup Check Overlay */}
+      {isCheckingUpdate && (
+        <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#090909]">
+          <img src={hytaleLogo} alt="Hytale" className="h-32 mb-8 animate-pulse drop-shadow-2xl" />
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-[#FFA845] animate-spin" />
+            <p className="text-white/50 text-sm font-medium tracking-wide uppercase">{t('Checking for updates...')}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Blocking Update Modal */}
+      {!isCheckingUpdate && blockingUpdate && !isUpdatingLauncher && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-6">
+          <div className="w-full max-w-md bg-[#0d0d0d] rounded-2xl border border-white/10 p-8 flex flex-col items-center text-center shadow-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-[#FFA845]/20 flex items-center justify-center text-[#FFA845] mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">{t('Update Available')}</h2>
+            <p className="text-white/60 mb-8">
+              {t('A new version of Hylancher is available.')}
+              <span className="block mt-1 text-[#FFA845] font-mono text-sm">{blockingUpdate.name}</span>
+            </p>
+
+            <button
+              onClick={handleUpdate}
+              className="w-full py-4 bg-[#FFA845] hover:bg-[#FFB966] text-black font-bold rounded-xl transition-all active:scale-95"
+            >
+              {t('Update Now')}
+            </button>
+
+            <button
+              onClick={() => setBlockingUpdate(null)}
+              className="mt-3 w-full py-3 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white font-medium rounded-xl transition-all active:scale-95"
+            >
+              {t('Skip Update')}
+            </button>
+          </div>
+        </div>
+      )}
+
       <Titlebar />
 
       {/* Music Player - positioned in top right */}
@@ -439,6 +510,7 @@ const App: React.FC = () => {
           progress={progress}
           downloaded={downloaded}
           total={total}
+          speed={speed}
           currentBranch={currentBranch}
           currentVersion={currentVersion}
           availableVersions={availableVersions}
@@ -454,7 +526,8 @@ const App: React.FC = () => {
             showModManager: (query?: string) => {
               setModManagerSearchQuery(query || '');
               setShowModManager(true);
-            }
+            },
+            showSettings: () => setShowSettings(true)
           }}
         />
       </main>
@@ -483,6 +556,20 @@ const App: React.FC = () => {
           currentBranch={currentBranch}
           currentVersion={currentVersion}
           initialSearchQuery={modManagerSearchQuery}
+        />
+      )}
+
+      {showSettings && (
+        <SettingsModal
+          onClose={() => setShowSettings(false)}
+          onShowLogs={() => setShowLogs(true)}
+        />
+      )}
+
+      {showLogs && (
+        <LogsModal
+          onClose={() => setShowLogs(false)}
+          getGameLogs={GetGameLogs}
         />
       )}
     </div>

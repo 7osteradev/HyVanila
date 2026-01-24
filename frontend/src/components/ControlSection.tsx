@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FolderOpen, Play, Package, Square, Github, Bug, GitBranch, Loader2, Download, ChevronDown, HardDrive, Check, Coffee } from 'lucide-react';
+import { FolderOpen, Play, Package, Square, Github, Bug, GitBranch, Loader2, Download, ChevronDown, HardDrive, Check, Coffee, Settings } from 'lucide-react';
 import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
 import { GameBranch } from '../constants/enums';
 import { LanguageSelector } from './LanguageSelector';
@@ -17,6 +17,7 @@ interface ControlSectionProps {
   progress: number;
   downloaded: number;
   total: number;
+  speed?: string;
   currentBranch: string;
   currentVersion: number;
   availableVersions: number[];
@@ -30,6 +31,7 @@ interface ControlSectionProps {
     openFolder: () => void;
     showDelete: () => void;
     showModManager: (query?: string) => void;
+    showSettings: () => void;
   };
 }
 
@@ -67,6 +69,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
   progress,
   downloaded,
   total,
+  speed,
   currentBranch,
   currentVersion,
   availableVersions,
@@ -265,6 +268,8 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
         />
         <NavBtn onClick={openGitHub} icon={<Github size={20} />} tooltip="GitHub" />
 
+        <NavBtn onClick={actions.showSettings} icon={<Settings size={20} />} tooltip={t('Settings')} />
+
         <NavBtn onClick={openBugReport} icon={<Bug size={20} />} tooltip={t('Report Bug')} />
 
         <LanguageSelector
@@ -295,8 +300,25 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
         </div>
 
         {/* Play/Download button on right - Fixed width container */}
-        <div className="w-[200px] flex justify-end">
-          {isGameRunning ? (
+        <div className="w-[300px] flex justify-end items-center gap-4">
+          {isDownloading ? (
+            <div className="flex-1 flex flex-col gap-1.5">
+              <div className="flex justify-between items-end px-1">
+                <span className="text-white/80 font-bold text-sm">Downloading...</span>
+                <span className="text-xs font-mono text-[#FFA845]">{speed}</span>
+              </div>
+              <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#FFA845] rounded-full transition-all duration-300 ease-out"
+                  style={{ width: `${Math.min(progress, 100)}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-start px-1 text-[10px] text-white/40 uppercase tracking-wider font-medium">
+                <span>{Math.round(progress)}%</span>
+                <span>{formatBytes(downloaded)} / {formatBytes(total)}</span>
+              </div>
+            </div>
+          ) : isGameRunning ? (
             <button
               onClick={onExit}
               className="h-12 px-8 rounded-xl font-black text-xl tracking-tight flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer"
@@ -304,21 +326,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
               <Square size={20} fill="currentColor" />
               <span>{t('EXIT')}</span>
             </button>
-          ) : isDownloading ? (
-            <div className="h-12 px-6 rounded-xl bg-[#151515] border border-white/10 flex items-center justify-center gap-4 relative overflow-hidden min-w-[200px]">
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-[#FFA845]/30 to-[#FF6B35]/30 transition-all duration-300"
-                style={{ width: `${Math.min(progress, 100)}%` }}
-              />
-              <div className="relative z-10 flex items-center gap-3">
-                <span className="text-lg font-bold text-white">{Math.round(progress)}%</span>
-                {total > 0 && (
-                  <span className="text-xs text-gray-400">
-                    {formatBytes(downloaded)} / {formatBytes(total)}
-                  </span>
-                )}
-              </div>
-            </div>
+
           ) : isCheckingInstalled ? (
             <button
               disabled
@@ -354,6 +362,6 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };

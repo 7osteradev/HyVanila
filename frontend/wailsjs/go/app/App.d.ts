@@ -114,11 +114,23 @@ export function SearchMods(arg1:string,arg2:number,arg3:number):Promise<mods.Sea
 
 export function SelectInstanceDirectory():Promise<string>;
 
+export function SelectJavaPath():Promise<string>;
+
 export function SetAuthDomain(arg1:string):Promise<void>;
 
 export function SetAutoUpdateLatest(arg1:boolean):Promise<void>;
 
 export function SetCustomInstanceDir(arg1:string):Promise<void>;
+
+export function SetDiscordRPCEnabled(arg1:boolean):Promise<void>;
+
+export function SetFullScreen(arg1:boolean):Promise<void>;
+
+export function SetJavaPath(arg1:string):Promise<void>;
+
+export function SetMaxMemory(arg1:number):Promise<void>;
+
+export function SetMinMemory(arg1:number):Promise<void>;
 
 export function SetMusicEnabled(arg1:boolean):Promise<void>;
 

@@ -171,6 +171,11 @@ export namespace config {
 	    autoUpdateLatest: boolean;
 	    onlineMode: boolean;
 	    authDomain: string;
+	    javaPath: string;
+	    discordRPCEnabled: boolean;
+	    maxMemory: number;
+	    minMemory: number;
+	    fullScreen: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -187,6 +192,11 @@ export namespace config {
 	        this.autoUpdateLatest = source["autoUpdateLatest"];
 	        this.onlineMode = source["onlineMode"];
 	        this.authDomain = source["authDomain"];
+	        this.javaPath = source["javaPath"];
+	        this.discordRPCEnabled = source["discordRPCEnabled"];
+	        this.maxMemory = source["maxMemory"];
+	        this.minMemory = source["minMemory"];
+	        this.fullScreen = source["fullScreen"];
 	    }
 	}
 

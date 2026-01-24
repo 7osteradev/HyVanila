@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { GetMusicEnabled, SetMusicEnabled } from '../../wailsjs/go/app/App';
+import { EventsOn } from '../../wailsjs/runtime/runtime';
 
 // Import all music tracks
 import menu01 from '../assets/menu_01.ogg';
@@ -57,6 +58,14 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ className = '', forceM
       SetMusicEnabled(!isMuted).catch(console.error);
     }
   }, [isMuted, configLoaded]);
+
+  // Listen for external music toggles (e.g. from SettingsModal)
+  useEffect(() => {
+    const unsub = EventsOn('music-enabled-changed', (enabled: boolean) => {
+      setIsMuted(!enabled);
+    });
+    return () => unsub();
+  }, []);
 
   // Handle forceMuted prop with smooth fade
   useEffect(() => {

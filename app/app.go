@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"HyPrism/internal/config"
+	"HyPrism/internal/discord"
 	"HyPrism/internal/env"
 	"HyPrism/internal/game"
 	"HyPrism/internal/mods"
@@ -22,9 +23,10 @@ import (
 
 // App struct
 type App struct {
-	ctx         context.Context
-	cfg         *config.Config
-	newsService *news.NewsService
+	ctx            context.Context
+	cfg            *config.Config
+	newsService    *news.NewsService
+	discordService *discord.Service
 }
 
 // ProgressUpdate represents download/install progress
@@ -45,8 +47,9 @@ func NewApp() *App {
 		cfg = config.Default()
 	}
 	return &App{
-		cfg:         cfg,
-		newsService: news.NewNewsService(),
+		cfg:            cfg,
+		newsService:    news.NewNewsService(),
+		discordService: discord.NewService(),
 	}
 }
 
@@ -55,7 +58,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 
 	fmt.Println("╔══════════════════════════════════════════════════════════════╗")
-	fmt.Println("║           HyPrism - Hytale Launcher Starting...             ║")
+	fmt.Println("║           Hylancher - Hytale Launcher Starting...             ║")
 	fmt.Printf("║           Version: %-43s║\n", AppVersion)
 	fmt.Println("╚══════════════════════════════════════════════════════════════╝")
 
@@ -70,6 +73,15 @@ func (a *App) Startup(ctx context.Context) {
 		fmt.Printf("Warning: Failed to create folders: %v\n", err)
 	}
 
+	// Initialize Discord RPC if enabled
+	if a.cfg.DiscordRPCEnabled {
+		go func() {
+			if err := a.discordService.Initialize(); err != nil {
+				fmt.Printf("Warning: Failed to initialize Discord RPC: %v\n", err)
+			}
+		}()
+	}
+
 	// Check for launcher updates in background
 	go func() {
 		fmt.Println("Starting background update check...")
@@ -79,7 +91,10 @@ func (a *App) Startup(ctx context.Context) {
 
 // Shutdown is called when the app closes
 func (a *App) Shutdown(ctx context.Context) {
-	fmt.Println("HyPrism shutting down...")
+	fmt.Println("Hylancher shutting down...")
+	if a.discordService != nil {
+		a.discordService.Close()
+	}
 }
 
 // SelectInstanceDirectory opens a folder picker dialog and saves the selected directory
@@ -119,6 +134,35 @@ func (a *App) SelectInstanceDirectory() (string, error) {
 	return selectedDir, nil
 }
 
+// SelectJavaPath opens a file picker dialog to select the Java executable
+func (a *App) SelectJavaPath() (string, error) {
+	selectedFile, err := wailsRuntime.OpenFileDialog(a.ctx, wailsRuntime.OpenDialogOptions{
+		Title: "Select Java Executable",
+		Filters: []wailsRuntime.FileFilter{
+			{
+				DisplayName: "Executables",
+				Pattern:     "java.exe;java",
+			},
+		},
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to open file dialog: %w", err)
+	}
+
+	if selectedFile == "" {
+		return "", nil
+	}
+
+	// Save to config
+	a.cfg.JavaPath = selectedFile
+	if err := config.Save(a.cfg); err != nil {
+		return "", fmt.Errorf("failed to save config: %w", err)
+	}
+
+	fmt.Printf("Java path updated to: %s\n", selectedFile)
+	return selectedFile, nil
+}
+
 // progressCallback sends progress updates to frontend
 func (a *App) progressCallback(stage string, progress float64, message string, currentFile string, speed string, downloaded, total int64) {
 	wailsRuntime.EventsEmit(a.ctx, "progress-update", ProgressUpdate{
@@ -145,7 +189,7 @@ func (a *App) emitError(err error) {
 var AppVersion string = "dev"
 
 // AppTitle is the app window title - set at build time via ldflags
-var AppTitle string = "HyPrism - Hytale Launcher"
+var AppTitle string = "Hylancher - Hytale Launcher"
 
 // GetLauncherVersion returns the current launcher version
 func (a *App) GetLauncherVersion() string {
@@ -195,6 +239,18 @@ func (a *App) DownloadAndLaunch(playerName string) error {
 		Version:    version,
 		OnlineMode: a.cfg.OnlineMode,
 		AuthDomain: a.cfg.AuthDomain,
+		JavaPath:   a.cfg.JavaPath,
+		MaxMemory:  a.cfg.MaxMemory,
+		MinMemory:  a.cfg.MinMemory,
+		FullScreen: a.cfg.FullScreen,
+		OnExit: func() {
+			// Show launcher window when game exits
+			wailsRuntime.WindowShow(a.ctx)
+			// Reset Discord RPC
+			if a.cfg.DiscordRPCEnabled && a.discordService != nil {
+				a.discordService.SetIdle()
+			}
+		},
 	}
 
 	if err := game.LaunchInstanceWithOptions(opts); err != nil {
@@ -202,6 +258,18 @@ func (a *App) DownloadAndLaunch(playerName string) error {
 		a.emitError(wrappedErr)
 		return wrappedErr
 	}
+
+	// Update Discord Status to playing
+	if a.cfg.DiscordRPCEnabled && a.discordService != nil {
+		versionStr := strconv.Itoa(version)
+		if version == 0 {
+			versionStr = "Latest"
+		}
+		a.discordService.SetPlaying(versionStr)
+	}
+
+	// Hide launcher window
+	wailsRuntime.WindowHide(a.ctx)
 
 	return nil
 }

@@ -6,6 +6,8 @@ import (
 	"HyPrism/internal/config"
 	"HyPrism/internal/env"
 	"HyPrism/internal/pwr"
+
+	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // SetNick sets the player nickname
@@ -32,6 +34,7 @@ func (a *App) SaveConfig() error {
 // SetMusicEnabled sets music enabled state and saves it
 func (a *App) SetMusicEnabled(enabled bool) error {
 	a.cfg.MusicEnabled = enabled
+	wailsRuntime.EventsEmit(a.ctx, "music-enabled-changed", enabled)
 	return config.Save(a.cfg)
 }
 
@@ -141,5 +144,47 @@ func (a *App) GetAuthDomain() string {
 // SetAuthDomain sets the custom auth domain
 func (a *App) SetAuthDomain(domain string) error {
 	a.cfg.AuthDomain = domain
+	return config.Save(a.cfg)
+}
+
+// SetJavaPath sets the custom Java path
+func (a *App) SetJavaPath(path string) error {
+	a.cfg.JavaPath = path
+	return config.Save(a.cfg)
+}
+
+// SetDiscordRPCEnabled sets whether Discord RPC is enabled
+func (a *App) SetDiscordRPCEnabled(enabled bool) error {
+	a.cfg.DiscordRPCEnabled = enabled
+	
+	// Handle runtime toggle
+	if enabled {
+		if a.discordService != nil {
+			a.discordService.Initialize()
+		}
+	} else {
+		if a.discordService != nil {
+			a.discordService.Close()
+		}
+	}
+	
+	return config.Save(a.cfg)
+}
+
+// SetMaxMemory sets the maximum memory in MB
+func (a *App) SetMaxMemory(memory int) error {
+	a.cfg.MaxMemory = memory
+	return config.Save(a.cfg)
+}
+
+// SetMinMemory sets the minimum memory in MB
+func (a *App) SetMinMemory(memory int) error {
+	a.cfg.MinMemory = memory
+	return config.Save(a.cfg)
+}
+
+// SetFullScreen sets the full screen mode
+func (a *App) SetFullScreen(enabled bool) error {
+	a.cfg.FullScreen = enabled
 	return config.Save(a.cfg)
 }

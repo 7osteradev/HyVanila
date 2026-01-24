@@ -12,7 +12,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
-//go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
@@ -20,12 +19,12 @@ func main() {
 	application := app.NewApp()
 
 	err := wails.Run(&options.App{
-		Title:         app.AppTitle,
-		Width:         1280,
-		Height:        720,
-		MinWidth:      1280,
-		MinHeight:     720,
-		Frameless:     true,
+		Title:     app.AppTitle,
+		Width:     1280,
+		Height:    720,
+		MinWidth:  1280,
+		MinHeight: 720,
+		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -37,13 +36,13 @@ func main() {
 			application,
 		},
 		Windows: &windows.Options{
-			IsZoomControlEnabled:           false,
-			WebviewIsTransparent:           false,
-			WindowIsTranslucent:            false,
-			DisableWindowIcon:              false,
+			IsZoomControlEnabled:              false,
+			WebviewIsTransparent:              false,
+			WindowIsTranslucent:               false,
+			DisableWindowIcon:                 false,
 			DisableFramelessWindowDecorations: false,
-			WebviewUserDataPath:            "",
-			ZoomFactor:                     1.0,
+			WebviewUserDataPath:               "",
+			ZoomFactor:                        1.0,
 		},
 		Mac: &mac.Options{
 			TitleBar:             mac.TitleBarHiddenInset(),

@@ -218,6 +218,10 @@ export function SelectInstanceDirectory() {
   return window['go']['app']['App']['SelectInstanceDirectory']();
 }
 
+export function SelectJavaPath() {
+  return window['go']['app']['App']['SelectJavaPath']();
+}
+
 export function SetAuthDomain(arg1) {
   return window['go']['app']['App']['SetAuthDomain'](arg1);
 }
@@ -228,6 +232,26 @@ export function SetAutoUpdateLatest(arg1) {
 
 export function SetCustomInstanceDir(arg1) {
   return window['go']['app']['App']['SetCustomInstanceDir'](arg1);
+}
+
+export function SetDiscordRPCEnabled(arg1) {
+  return window['go']['app']['App']['SetDiscordRPCEnabled'](arg1);
+}
+
+export function SetFullScreen(arg1) {
+  return window['go']['app']['App']['SetFullScreen'](arg1);
+}
+
+export function SetJavaPath(arg1) {
+  return window['go']['app']['App']['SetJavaPath'](arg1);
+}
+
+export function SetMaxMemory(arg1) {
+  return window['go']['app']['App']['SetMaxMemory'](arg1);
+}
+
+export function SetMinMemory(arg1) {
+  return window['go']['app']['App']['SetMinMemory'](arg1);
 }
 
 export function SetMusicEnabled(arg1) {

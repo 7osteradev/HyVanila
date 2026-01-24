@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"HyPrism/internal/auth"
@@ -17,11 +18,17 @@ import (
 
 // LaunchOptions contains options for launching the game
 type LaunchOptions struct {
-	PlayerName  string
-	Branch      string
-	Version     int
-	OnlineMode  bool   // If true, use online auth mode with patched binaries
-	AuthDomain  string // Custom auth domain (empty for default)
+	PlayerName string
+	Branch     string
+	Version    int
+	OnlineMode bool   // If true, use online auth mode with patched binaries
+	AuthDomain string // Custom auth domain (empty for default)
+	JavaPath   string // Custom Java path
+	MaxMemory  int    // Max memory in MB
+	MinMemory  int    // Min memory in MB
+	FullScreen bool   // Full screen mode
+	// Callbacks
+	OnExit func() // Called when the game process exits
 }
 
 // Legacy Launch() removed - use LaunchInstance() instead
@@ -94,23 +101,26 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 	// Set up Java path
 	var jrePath string
 	jreDir := filepath.Join(baseDir, "jre")
-	
-	switch runtime.GOOS {
-	case "darwin":
-		javaDir := filepath.Join(baseDir, "java")
-		javaHomeBin := filepath.Join(javaDir, "Contents", "Home", "bin")
-		
-		if _, err := os.Stat(javaHomeBin); err != nil {
-			os.RemoveAll(javaDir)
-			os.MkdirAll(filepath.Join(javaDir, "Contents", "Home"), 0755)
-			os.Symlink(filepath.Join(jreDir, "bin"), filepath.Join(javaDir, "Contents", "Home", "bin"))
-			os.Symlink(filepath.Join(jreDir, "lib"), filepath.Join(javaDir, "Contents", "Home", "lib"))
+	if opts.JavaPath != "" {
+		jrePath = opts.JavaPath
+	} else {
+		switch runtime.GOOS {
+		case "darwin":
+			javaDir := filepath.Join(baseDir, "java")
+			javaHomeBin := filepath.Join(javaDir, "Contents", "Home", "bin")
+			
+			if _, err := os.Stat(javaHomeBin); err != nil {
+				os.RemoveAll(javaDir)
+				os.MkdirAll(filepath.Join(javaDir, "Contents", "Home"), 0755)
+				os.Symlink(filepath.Join(jreDir, "bin"), filepath.Join(javaDir, "Contents", "Home", "bin"))
+				os.Symlink(filepath.Join(jreDir, "lib"), filepath.Join(javaDir, "Contents", "Home", "lib"))
+			}
+			jrePath = filepath.Join(baseDir, "java", "Contents", "Home", "bin", "java")
+		case "windows":
+			jrePath = filepath.Join(jreDir, "bin", "java.exe")
+		default:
+			jrePath = filepath.Join(jreDir, "bin", "java")
 		}
-		jrePath = filepath.Join(baseDir, "java", "Contents", "Home", "bin", "java")
-	case "windows":
-		jrePath = filepath.Join(jreDir, "bin", "java.exe")
-	default:
-		jrePath = filepath.Join(jreDir, "bin", "java")
 	}
 
 	if _, err := os.Stat(jrePath); err != nil {
@@ -118,7 +128,7 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 	}
 
 	// On macOS, sign Java runtime to avoid Gatekeeper issues
-	if runtime.GOOS == "darwin" {
+	if runtime.GOOS == "darwin" && opts.JavaPath == "" {
 		signMacOSBinaries(jreDir, jrePath)
 	}
 
@@ -197,6 +207,18 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 		"--name", opts.PlayerName,
 	}
 
+	if opts.MaxMemory > 0 {
+		commonArgs = append(commonArgs, "--max-memory", strconv.Itoa(opts.MaxMemory))
+	}
+
+	if opts.MinMemory > 0 {
+		commonArgs = append(commonArgs, "--min-memory", strconv.Itoa(opts.MinMemory))
+	}
+
+	if opts.FullScreen {
+		commonArgs = append(commonArgs, "--fullscreen")
+	}
+
 	// Add auth tokens if available and in authenticated mode
 	if authMode == "authenticated" && tokens != nil {
 		if tokens.IdentityToken != "" {
@@ -273,6 +295,9 @@ func LaunchInstanceWithOptions(opts LaunchOptions) error {
 		cmd.Wait()
 		gameProcess = nil
 		gameRunning = false
+		if opts.OnExit != nil {
+			opts.OnExit()
+		}
 	}()
 
 	return nil

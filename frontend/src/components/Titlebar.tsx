@@ -19,10 +19,10 @@ export const Titlebar: React.FC = () => {
       {/* Logo/Title */}
       <div className="flex items-center gap-3" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
         <div className="w-6 h-6 flex items-center justify-center">
-          <img src={appIcon} alt="HyPrism" className="w-full h-full object-contain" style={{ imageRendering: 'crisp-edges' }} />
+          <img src={appIcon} alt="Hylancher" className="w-full h-full object-contain" style={{ imageRendering: 'crisp-edges' }} />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-white/80 text-sm font-semibold tracking-tight">HyPrism</span>
+          <span className="text-white/80 text-sm font-semibold tracking-tight">Hylancher</span>
           {version && <span className="text-white/40 text-xs">v{version}</span>}
         </div>
       </div>
