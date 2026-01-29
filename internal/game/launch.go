@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"HyPrism/internal/auth"
-	"HyPrism/internal/env"
-	"HyPrism/internal/patcher"
+	"HyVanila/internal/auth"
+	"HyVanila/internal/env"
+	"HyVanila/internal/patcher"
 )
 
 // LaunchOptions contains options for launching the game
@@ -412,7 +412,7 @@ func GetGameLogs() (string, error) {
 		filepath.Join(env.GetInstanceGameDir("release", 0), "logs", "latest.log"),
 		filepath.Join(env.GetInstanceGameDir("release", 0), "logs", "game.log"),
 		filepath.Join(env.GetInstanceGameDir("release", 0), "Client", "logs", "latest.log"),
-		// HyPrism specific log
+		// HyVanila specific log
 		filepath.Join(baseDir, "logs", "game.log"),
 	}
 	

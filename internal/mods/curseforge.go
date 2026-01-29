@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"time"
 
-	"HyPrism/internal/util/download"
+	"HyVanila/internal/util/download"
 )
 
 const (

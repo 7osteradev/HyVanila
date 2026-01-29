@@ -54,7 +54,7 @@ export const UpdateOverlay: React.FC<UpdateOverlayProps> = ({ progress, download
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(progress, 100)}%` }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#FFA845] to-[#FF6B35] rounded-full"
+            className="absolute inset-y-0 start-0 bg-gradient-to-r from-[#FFA845] to-[#FF6B35] rounded-full"
           />
           <div className="absolute inset-0 animate-shimmer" />
         </div>

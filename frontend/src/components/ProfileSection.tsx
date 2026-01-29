@@ -104,7 +104,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
 
       {/* Launcher version */}
       <div className="text-xs text-white/30 mt-1">
-        HyPrism {launcherVersion}
+        HyVanila {launcherVersion}
       </div>
     </motion.div>
   );

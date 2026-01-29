@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FolderOpen, Play, Package, Square, Github, Bug, GitBranch, Loader2, Download, ChevronDown, HardDrive, Check, Coffee, Settings } from 'lucide-react';
+import { FolderOpen, Play, Package, Square, Github, Bug, GitBranch, Loader2, Download, ChevronDown, HardDrive, Check, Settings } from 'lucide-react';
 import { BrowserOpenURL } from '../../wailsjs/runtime/runtime';
 import { GameBranch } from '../constants/enums';
 import { LanguageSelector } from './LanguageSelector';
@@ -43,7 +43,7 @@ const NavBtn: React.FC<{ onClick?: () => void; icon: React.ReactNode; tooltip?: 
   >
     {icon}
     {tooltip && (
-      <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+      <span className="absolute -top-10 start-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
         {tooltip}
       </span>
     )}
@@ -89,9 +89,9 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
 
   const { t } = useTranslation();
 
-  const openGitHub = () => BrowserOpenURL('https://github.com/yyyumeniku/HyPrism');
-  const openBugReport = () => BrowserOpenURL('https://github.com/yyyumeniku/HyPrism/issues/new');
-  const openCoffee = () => BrowserOpenURL('https://buymeacoffee.com/yyyumeniku');
+  const openGitHub = () => BrowserOpenURL('https://github.com/7osteradev/HyVanila');
+  const openBugReport = () => BrowserOpenURL('https://github.com/7osteradev/HyVanila/issues/new');
+
 
   // Close dropdowns on click outside
   useEffect(() => {
@@ -154,7 +154,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
               flex items-center justify-center gap-2
               text-white/60 hover:text-white hover:bg-white/10
               disabled:opacity-50 disabled:cursor-not-allowed
-              active:scale-95 transition-all duration-150 rounded-l-xl
+              active:scale-95 transition-all duration-150 rounded-s-xl
               ${isBranchOpen ? 'text-white bg-white/10' : ''}
             `}
 
@@ -169,7 +169,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
 
           {/* Branch Dropdown Menu (opens up) */}
           {isBranchOpen && (
-            <div className="absolute bottom-full left-0 mb-2 z-[100] min-w-[140px] bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50 overflow-hidden">
+            <div className="absolute bottom-full start-0 mb-2 z-[100] min-w-[140px] bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50 overflow-hidden">
               {[GameBranch.RELEASE, GameBranch.PRE_RELEASE].map((branch) => (
                 <button
                   key={branch}
@@ -180,7 +180,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
                     }`}
                 >
                   {currentBranch === branch && <Check size={14} className="text-white" strokeWidth={3} />}
-                  <span className={currentBranch === branch ? '' : 'ml-[22px]'}>{branch === GameBranch.RELEASE ? t('Release') : t('Pre-Release')}</span>
+                  <span className={currentBranch === branch ? '' : 'ms-[22px]'}>{branch === GameBranch.RELEASE ? t('Release') : t('Pre-Release')}</span>
                 </button>
               ))}
             </div>
@@ -200,7 +200,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
               flex items-center justify-center gap-2
               text-white/60 hover:text-[#FFA845] hover:bg-[#FFA845]/10
               disabled:opacity-50 disabled:cursor-not-allowed
-              active:scale-95 transition-all duration-150 rounded-r-xl
+              active:scale-95 transition-all duration-150 rounded-e-xl
               ${isVersionOpen ? 'text-[#FFA845] bg-[#FFA845]/10' : ''}
             `}
 
@@ -216,7 +216,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
 
           {/* Version Dropdown Menu (opens up) */}
           {isVersionOpen && (
-            <div className="absolute bottom-full right-0 mb-2 z-[100] min-w-[120px] max-h-60 overflow-y-auto bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50">
+            <div className="absolute bottom-full end-0 mb-2 z-[100] min-w-[120px] max-h-60 overflow-y-auto bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50">
               {availableVersions.length > 0 ? (
                 availableVersions.map((version) => {
                   const isInstalled = (installedVersions || []).includes(version) || version === 0;
@@ -233,7 +233,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
                         {currentVersion === version && (
                           <Check size={14} className="text-[#FFA845]" strokeWidth={3} />
                         )}
-                        <span className={currentVersion === version ? '' : 'ml-[22px]'}>
+                        <span className={currentVersion === version ? '' : 'ms-[22px]'}>
                           {version === 0 ? t('latest') : `v${version}`}
                         </span>
                       </div>
@@ -280,17 +280,7 @@ export const ControlSection: React.FC<ControlSectionProps> = ({
 
         <OnlineToggle />
 
-        <button
-          onClick={openCoffee}
-          className="h-12 px-4 rounded-xl glass border border-white/5 flex items-center justify-center gap-2 text-white/60 hover:text-[#FFA845] hover:bg-[#FFA845]/10 active:scale-95 transition-all duration-150 relative group"
 
-        >
-          <span className="text-sm font-medium">{t('Buy me a')}</span>
-          <Coffee size={20} />
-          <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-            {t('Buy Me a Coffee')}
-          </span>
-        </button>
 
         {/* Spacer + Disclaimer in center */}
         <div className="flex-1 flex justify-center">

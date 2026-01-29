@@ -42,11 +42,11 @@ import { EventsOn } from '../wailsjs/runtime/runtime';
 import { NewsPreview } from './components/NewsPreview';
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // User state
-  const [username, setUsername] = useState<string>("HyPrism");
+  const [username, setUsername] = useState<string>("HyVanila");
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [launcherVersion, setLauncherVersion] = useState<string>("dev");
+  const [launcherVersion, setLauncherVersion] = useState<string>("1.0.0");
 
   // Download state
   const [progress, setProgress] = useState<number>(0);
@@ -83,6 +83,13 @@ const App: React.FC = () => {
   // Startup Update Check
   const [isCheckingUpdate, setIsCheckingUpdate] = useState<boolean>(true);
   const [blockingUpdate, setBlockingUpdate] = useState<any>(null);
+
+  // Update document direction and language based on i18n
+  useEffect(() => {
+    const isRTL = i18n.language === 'ar';
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   // Check if current version is installed when branch or version changes
   useEffect(() => {
@@ -445,7 +452,7 @@ const App: React.FC = () => {
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">{t('Update Available')}</h2>
             <p className="text-white/60 mb-8">
-              {t('A new version of Hylancher is available.')}
+              {t('A new version of HyVanila is available.')}
               <span className="block mt-1 text-[#FFA845] font-mono text-sm">{blockingUpdate.name}</span>
             </p>
 
@@ -469,7 +476,7 @@ const App: React.FC = () => {
       <Titlebar />
 
       {/* Music Player - positioned in top right */}
-      <div className="absolute top-12 right-4 z-20">
+      <div className="absolute top-12 end-4 z-20">
         <MusicPlayer forceMuted={isGameRunning} />
       </div>
 

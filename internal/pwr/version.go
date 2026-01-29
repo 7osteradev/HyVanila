@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"HyPrism/internal/env"
-	"HyPrism/internal/util/download"
+	"HyVanila/internal/env"
+	"HyVanila/internal/util/download"
 )
 
 // getOS returns the operating system name in the format expected by Hytale's patch server

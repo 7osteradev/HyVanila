@@ -1,7 +1,7 @@
 package updater
 
 import (
-	"HyPrism/internal/util/download"
+	"HyVanila/internal/util/download"
 	"context"
 	"encoding/json"
 	"fmt"

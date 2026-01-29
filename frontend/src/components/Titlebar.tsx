@@ -12,17 +12,17 @@ export const Titlebar: React.FC = () => {
   }, []);
 
   return (
-    <div 
-      className="absolute top-0 left-0 right-0 h-10 flex items-center justify-between px-4 z-[100]"
+    <div
+      className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-4 z-[100]"
       style={{ '--wails-draggable': 'drag' } as React.CSSProperties}
     >
       {/* Logo/Title */}
       <div className="flex items-center gap-3" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
         <div className="w-6 h-6 flex items-center justify-center">
-          <img src={appIcon} alt="Hylancher" className="w-full h-full object-contain" style={{ imageRendering: 'crisp-edges' }} />
+          <img src={appIcon} alt="HyVanila" className="w-full h-full object-contain" style={{ imageRendering: 'crisp-edges' }} />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-white/80 text-sm font-semibold tracking-tight">Hylancher</span>
+          <span className="text-white/80 text-sm font-semibold tracking-tight">HyVanila</span>
           {version && <span className="text-white/40 text-xs">v{version}</span>}
         </div>
       </div>
@@ -35,14 +35,14 @@ export const Titlebar: React.FC = () => {
         >
           <Minus size={14} className="text-white/60" />
         </button>
-        
+
         <button
           onClick={() => WindowToggleMaximise()}
           className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/10 active:scale-95"
         >
           <Square size={12} className="text-white/60" />
         </button>
-        
+
         <button
           onClick={() => Quit()}
           className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-red-500/80 active:scale-95"

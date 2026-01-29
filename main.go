@@ -1,7 +1,7 @@
 package main
 
 import (
-	"HyPrism/app"
+	"HyVanila/app"
 	"embed"
 
 	"github.com/wailsapp/wails/v2"
@@ -12,6 +12,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
+//go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
@@ -53,7 +54,7 @@ func main() {
 			WindowIsTranslucent: false,
 			WebviewGpuPolicy:    linux.WebviewGpuPolicyNever,
 			// ProgramName helps with window grouping on Linux desktops
-			ProgramName: "HyPrism",
+			ProgramName: "HyVanila",
 		},
 	})
 

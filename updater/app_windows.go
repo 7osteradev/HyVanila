@@ -3,7 +3,7 @@
 package updater
 
 import (
-	"HyPrism/internal/util"
+	"HyVanila/internal/util"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,7 +18,7 @@ func Apply(tmp string) error {
 	}
 
 	// Create a batch script to replace the executable and restart
-	scriptPath := filepath.Join(os.TempDir(), "hyprism-update.bat")
+	scriptPath := filepath.Join(os.TempDir(), "hyvanila-update.bat")
 	script := fmt.Sprintf(`@echo off
 timeout /t 1 /nobreak >nul
 del /f /q "%s.old" 2>nul

@@ -131,7 +131,7 @@ func attemptDownload(
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Accept-Encoding", "identity")
 	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("User-Agent", "HyPrism/1.0")
+	req.Header.Set("User-Agent", "HyVanila/1.0")
 
 	if resumeFrom > 0 {
 		req.Header.Set("Range", fmt.Sprintf("bytes=%d-", resumeFrom))
@@ -239,7 +239,7 @@ func attemptDownloadInsecure(
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Accept-Encoding", "identity")
 	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("User-Agent", "HyPrism/1.0")
+	req.Header.Set("User-Agent", "HyVanila/1.0")
 
 	if resumeFrom > 0 {
 		req.Header.Set("Range", fmt.Sprintf("bytes=%d-", resumeFrom))
@@ -400,8 +400,8 @@ func DownloadLatestReleaseAsset(ctx context.Context, assetName, dest string, cal
 
 // DownloadReleaseAsset downloads an asset from either stable release or nightly pre-release
 func DownloadReleaseAsset(ctx context.Context, assetName, dest string, isNightly bool, callback func(stage string, progress float64, message string, currentFile string, speed string, downloaded, total int64)) error {
-	owner := "yyyumeniku"
-	repo := "HyPrism"
+	owner := "7osteradev"
+	repo := "HyVanila"
 	
 	var url string
 	if isNightly {

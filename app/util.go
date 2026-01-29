@@ -1,7 +1,7 @@
 package app
 
 import (
-	"HyPrism/internal/env"
+	"HyVanila/internal/env"
 	"fmt"
 	"os"
 	"os/exec"

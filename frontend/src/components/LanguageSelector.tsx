@@ -105,7 +105,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
                 {/* Language Dropdown */}
                 {isOpen && (
-                    <div className="absolute bottom-full left-0 mb-2 z-[100] min-w-[150px] bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50 overflow-hidden">
+                    <div className="absolute bottom-full start-0 mb-2 z-[100] min-w-[150px] bg-[#1a1a1a] backdrop-blur-xl border border-white/10 rounded-xl shadow-xl shadow-black/50 overflow-hidden">
                         {Object.values(LANGUAGE_CONFIG).map((lang) => (
                             <button
                                 key={lang.code}
@@ -116,7 +116,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     }`}
                             >
                                 {i18n.language === lang.code && <Check size={14} className="text-white" strokeWidth={3} />}
-                                <div className={`flex flex-col items-start ${i18n.language === lang.code ? '' : 'ml-[22px]'}`}>
+                                <div className={`flex flex-col items-start ${i18n.language === lang.code ? '' : 'ms-[22px]'}`}>
                                     <span className="font-medium">{lang.nativeName}</span>
                                     <span className="text-xs opacity-50">{lang.name}</span>
                                 </div>

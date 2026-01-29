@@ -1,7 +1,7 @@
 package updater
 
 import (
-	"HyPrism/internal/util/download"
+	"HyVanila/internal/util/download"
 	"context"
 	"fmt"
 	"os"
@@ -12,7 +12,7 @@ import (
 func DownloadUpdate(ctx context.Context, url string, progress func(stage string, progress float64, message string, currentFile string, speed string, downloaded, total int64)) (string, error) {
 	fmt.Printf("Starting download from: %s\n", url)
 
-	tmp := filepath.Join(os.TempDir(), "hyprism-update.tmp")
+	tmp := filepath.Join(os.TempDir(), "hyvanila-update.tmp")
 
 	_ = os.Remove(tmp)
 

@@ -675,7 +675,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
               }`}
           >
             {t('Installed Mods')} ({installedMods.length})
-            {activeTab === 'installed' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FFA845]" />}
+            {activeTab === 'installed' && <div className="absolute bottom-0 inset-x-0 h-0.5 bg-[#FFA845]" />}
           </button>
           <button
             onClick={() => {
@@ -693,7 +693,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
                 {selectedBrowseMods.size}
               </span>
             )}
-            {activeTab === 'browse' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FFA845]" />}
+            {activeTab === 'browse' && <div className="absolute bottom-0 inset-x-0 h-0.5 bg-[#FFA845]" />}
           </button>
         </div>
 
@@ -701,13 +701,13 @@ export const ModManager: React.FC<ModManagerProps> = ({
         {activeTab === 'installed' && (
           <div className="p-3 border-b border-white/10 flex-shrink-0">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+              <Search size={16} className="absolute start-3 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 value={installedSearchQuery}
                 onChange={(e) => setInstalledSearchQuery(e.target.value)}
                 placeholder={t('Search installed mods...')}
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/40 focus:outline-none focus:border-[#FFA845]/50"
+                className="w-full h-10 ps-10 pe-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/40 focus:outline-none focus:border-[#FFA845]/50"
               />
             </div>
           </div>
@@ -717,13 +717,13 @@ export const ModManager: React.FC<ModManagerProps> = ({
         {activeTab === 'browse' && (
           <div className="p-3 border-b border-white/10 flex gap-2 flex-shrink-0">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+              <Search size={16} className="absolute start-3 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('Search mods...')}
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/40 focus:outline-none focus:border-[#FFA845]/50"
+                className="w-full h-10 ps-10 pe-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/40 focus:outline-none focus:border-[#FFA845]/50"
               />
             </div>
 
@@ -736,18 +736,18 @@ export const ModManager: React.FC<ModManagerProps> = ({
                 <span className="truncate">{getCategoryName()}</span>
                 <ChevronDown
                   size={14}
-                  className={`absolute right-3 text-white/40 transition-transform ${isCategoryDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`absolute end-3 text-white/40 transition-transform ${isCategoryDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {isCategoryDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 z-[100] min-w-[200px] max-h-60 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl overflow-y-auto">
+                <div className="absolute top-full start-0 mt-2 z-[100] min-w-[200px] max-h-60 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl overflow-y-auto">
                   <button
                     onClick={() => {
                       setSelectedCategory(0);
                       setIsCategoryDropdownOpen(false);
                     }}
-                    className={`w-full px-4 py-2.5 text-sm text-left hover:bg-white/10 transition-colors ${selectedCategory === 0 ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
+                    className={`w-full px-4 py-2.5 text-sm text-start hover:bg-white/10 transition-colors ${selectedCategory === 0 ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
                       }`}
                   >
                     {t('All Categories')}
@@ -759,7 +759,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
                         setSelectedCategory(cat.id);
                         setIsCategoryDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-2.5 text-sm text-left hover:bg-white/10 transition-colors ${selectedCategory === cat.id ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
+                      className={`w-full px-4 py-2.5 text-sm text-start hover:bg-white/10 transition-colors ${selectedCategory === cat.id ? 'text-[#FFA845] bg-white/5' : 'text-white/70'
                         }`}
                     >
                       {t(cat.name)}
@@ -1009,7 +1009,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
                                     BrowserOpenURL(`https://www.curseforge.com/hytale/mods/${mod.slug}`);
                                   }
                                 }}
-                                className="text-white font-medium truncate hover:text-[#FFA845]  text-left"
+                                className="text-white font-medium truncate hover:text-[#FFA845]  text-start"
                               >
                                 {mod.name}
                               </button>
@@ -1044,7 +1044,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
           </div>
 
           {/* Right side - Detail Panel */}
-          <div className="w-1/2 h-full flex flex-col border-l border-white/10 flex-shrink-0">
+          <div className="w-1/2 h-full flex flex-col border-s border-white/10 flex-shrink-0">
             {selectedMod ? (
               <>
                 {/* Detail Header */}
@@ -1066,7 +1066,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
                           BrowserOpenURL(`https://www.curseforge.com/hytale/mods/${slug}`);
                         }
                       }}
-                      className="text-lg font-bold text-white truncate hover:text-[#FFA845] text-left block w-full"
+                      className="text-lg font-bold text-white truncate hover:text-[#FFA845] text-start block w-full"
                     >
                       {selectedMod.name}
                     </button>
@@ -1109,13 +1109,13 @@ export const ModManager: React.FC<ModManagerProps> = ({
                           <>
                             <button
                               onClick={() => setActiveScreenshot((prev) => (prev > 0 ? prev - 1 : screenshots.length - 1))}
-                              className="absolute left-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white/80 hover:bg-black/80"
+                              className="absolute start-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white/80 hover:bg-black/80"
                             >
                               <ChevronLeft size={16} />
                             </button>
                             <button
                               onClick={() => setActiveScreenshot((prev) => (prev < screenshots.length - 1 ? prev + 1 : 0))}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white/80 hover:bg-black/80"
+                              className="absolute end-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white/80 hover:bg-black/80"
                             >
                               <ChevronRight size={16} />
                             </button>
@@ -1169,7 +1169,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
                             </option>
                           ))}
                         </select>
-                        <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none" />
+                        <ChevronDown size={16} className="absolute end-3 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none" />
                       </div>
                     )}
                   </div>
@@ -1502,7 +1502,7 @@ export const ModManager: React.FC<ModManagerProps> = ({
         >
           <button
             onClick={() => setFullscreenImage(null)}
-            className="absolute top-4 right-4 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors"
+            className="absolute top-4 end-4 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors"
           >
             <X size={24} />
           </button>

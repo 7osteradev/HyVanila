@@ -1,8 +1,8 @@
 package app
 
 import (
-	"HyPrism/internal/util"
-	"HyPrism/updater"
+	"HyVanila/internal/util"
+	"HyVanila/updater"
 	"fmt"
 	"os"
 

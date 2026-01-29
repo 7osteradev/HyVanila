@@ -10,13 +10,13 @@ import (
 	"strconv"
 	"strings"
 
-	"HyPrism/internal/config"
-	"HyPrism/internal/discord"
-	"HyPrism/internal/env"
-	"HyPrism/internal/game"
-	"HyPrism/internal/mods"
-	"HyPrism/internal/news"
-	"HyPrism/internal/pwr"
+	"HyVanila/internal/config"
+	"HyVanila/internal/discord"
+	"HyVanila/internal/env"
+	"HyVanila/internal/game"
+	"HyVanila/internal/mods"
+	"HyVanila/internal/news"
+	"HyVanila/internal/pwr"
 
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -58,7 +58,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 
 	fmt.Println("╔══════════════════════════════════════════════════════════════╗")
-	fmt.Println("║           Hylancher - Hytale Launcher Starting...             ║")
+	fmt.Println("║           HyVanila - Hytale Launcher Starting...             ║")
 	fmt.Printf("║           Version: %-43s║\n", AppVersion)
 	fmt.Println("╚══════════════════════════════════════════════════════════════╝")
 
@@ -91,7 +91,7 @@ func (a *App) Startup(ctx context.Context) {
 
 // Shutdown is called when the app closes
 func (a *App) Shutdown(ctx context.Context) {
-	fmt.Println("Hylancher shutting down...")
+	fmt.Println("HyVanila shutting down...")
 	if a.discordService != nil {
 		a.discordService.Close()
 	}
@@ -189,7 +189,7 @@ func (a *App) emitError(err error) {
 var AppVersion string = "dev"
 
 // AppTitle is the app window title - set at build time via ldflags
-var AppTitle string = "Hylancher - Hytale Launcher"
+var AppTitle string = "HyVanila - Hytale Launcher"
 
 // GetLauncherVersion returns the current launcher version
 func (a *App) GetLauncherVersion() string {
@@ -268,8 +268,8 @@ func (a *App) DownloadAndLaunch(playerName string) error {
 		a.discordService.SetPlaying(versionStr)
 	}
 
-	// Hide launcher window
-	wailsRuntime.WindowHide(a.ctx)
+	// Launcher window stays open
+	// wailsRuntime.WindowHide(a.ctx)
 
 	return nil
 }

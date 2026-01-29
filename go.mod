@@ -1,4 +1,4 @@
-module HyPrism
+module HyVanila
 
 go 1.23
 

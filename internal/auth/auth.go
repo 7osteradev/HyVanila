@@ -72,7 +72,7 @@ func FetchAuthTokens(uuid, name, authDomain string) (*AuthTokens, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "HyPrism-Launcher")
+	req.Header.Set("User-Agent", "HyVanila-Launcher")
 
 	resp, err := client.Do(req)
 	if err != nil {

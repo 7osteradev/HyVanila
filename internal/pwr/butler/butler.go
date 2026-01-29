@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"HyPrism/internal/env"
-	"HyPrism/internal/util"
-	"HyPrism/internal/util/download"
+	"HyVanila/internal/env"
+	"HyVanila/internal/util"
+	"HyVanila/internal/util/download"
 )
 
 const (

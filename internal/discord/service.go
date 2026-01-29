@@ -7,7 +7,7 @@ import (
 	"github.com/hugolgst/rich-go/client"
 )
 
-// AppID is the Discord Application ID for Hylancher
+// AppID is the Discord Application ID for HyVanila
 // TODO: Replace with a real registered application ID if needed
 const AppID = "1464599540148600978"
 
@@ -34,19 +34,19 @@ func (s *Service) Initialize() error {
 	}
 
 	s.initialized = true
-	
+
 	now := time.Now()
 	// Set initial status
 	err = client.SetActivity(client.Activity{
 		Details:    "In Launcher",
-		State:      "Browsing Hylancher",
+		State:      "Browsing HyVanila",
 		LargeImage: "logo", // Requires uploading assets to Discord Developer Portal
-		LargeText:  "Hylancher",
+		LargeText:  "HyVanila",
 		Timestamps: &client.Timestamps{
 			Start: &now,
 		},
 	})
-	
+
 	return err
 }
 
@@ -55,17 +55,17 @@ func (s *Service) SetPlaying(version string) error {
 	if !s.initialized {
 		return nil
 	}
-	
+
 	now := time.Now()
 	return client.SetActivity(client.Activity{
 		Details:    "Playing Hytale",
 		State:      fmt.Sprintf("Version %s", version),
 		LargeImage: "logo",
-		LargeText:  "Hylancher",
+		LargeText:  "HyVanila",
 		Buttons: []*client.Button{
 			{
 				Label: "Website",
-				Url:   "https://yyyumeniku.github.io/hyprism-site/",
+				Url:   "https://github.com/7osteradev/HyVanila",
 			},
 		},
 		Timestamps: &client.Timestamps{
@@ -79,21 +79,17 @@ func (s *Service) SetIdle() error {
 	if !s.initialized {
 		return nil
 	}
-	
+
 	now := time.Now()
 	return client.SetActivity(client.Activity{
 		Details:    "In Launcher",
 		State:      "Idle",
 		LargeImage: "logo",
-		LargeText:  "Hylancher",
+		LargeText:  "HyVanila",
 		Buttons: []*client.Button{
 			{
 				Label: "Website",
-				Url:   "https://yyyumeniku.github.io/hyprism-site/",
-			},
-			{
-				Label: "Support",
-				Url:   "https://buymeacoffee.com/yyyumeniku",
+				Url:   "https://github.com/7osteradev/HyVanila",
 			},
 		},
 		Timestamps: &client.Timestamps{

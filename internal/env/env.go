@@ -46,7 +46,7 @@ func GetDefaultAppDir() string {
 		}
 	}
 
-	return filepath.Join(baseDir, "HyPrism")
+	return filepath.Join(baseDir, "HyVanila")
 }
 
 // CreateFolders creates the required folder structure

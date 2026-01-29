@@ -19,7 +19,7 @@ func Apply(tmp string) error {
 	}
 
 	// Create a shell script to replace the binary and restart
-	scriptPath := filepath.Join(os.TempDir(), "hyprism-update.sh")
+	scriptPath := filepath.Join(os.TempDir(), "hyvanila-update.sh")
 	
 	var script string
 	if runtime.GOOS == "darwin" {
@@ -33,14 +33,14 @@ func Apply(tmp string) error {
 			return fmt.Errorf("not running from an app bundle: %s", appBundlePath)
 		}
 		
-		appName := filepath.Base(appBundlePath) // e.g., "HyPrism.app"
+		appName := filepath.Base(appBundlePath) // e.g., "HyVanila.app"
 		appDir := filepath.Dir(appBundlePath)   // e.g., "/Applications"
-		mountPoint := filepath.Join(os.TempDir(), "hyprism-dmg-mount")
+		mountPoint := filepath.Join(os.TempDir(), "hyvanila-dmg-mount")
 		
 		script = fmt.Sprintf(`#!/bin/bash
 set -e
 
-echo "Starting HyPrism update..."
+echo "Starting HyVanila update..."
 
 # Wait for app to close
 sleep 2
@@ -94,7 +94,7 @@ rmdir "%s" 2>/dev/null || true
 rm -rf "%s.old" 2>/dev/null || true
 rm -f "%s" 2>/dev/null || true
 
-echo "Update complete! Launching HyPrism..."
+echo "Update complete! Launching HyVanila..."
 
 # Restart the application
 open "%s/%s"

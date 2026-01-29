@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 	
-	"HyPrism/internal/config"
-	"HyPrism/internal/env"
-	"HyPrism/internal/pwr"
+	"HyVanila/internal/config"
+	"HyVanila/internal/env"
+	"HyVanila/internal/pwr"
 
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )

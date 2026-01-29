@@ -39,7 +39,7 @@ func FetchNews(limit int) ([]NewsItem, error) {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	req.Header.Set("User-Agent", "HyPrism/1.0")
+	req.Header.Set("User-Agent", "HyVanila/1.0")
 	req.Header.Set("Accept", "application/json")
 
 	resp, err := client.Do(req)

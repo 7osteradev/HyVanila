@@ -1,12 +1,11 @@
 <p align="left">
-  <img src="assets/Hyprism.svg" alt="HyPrism Logo" width="64" height="64" />
+  <img src="assets/Hyprism.svg" alt="HyVanila Logo" width="64" height="64" />
 </p>
 
-# HyPrism
+# HyVanila
 
-[![Downloads](https://img.shields.io/github/downloads/yyyumeniku/HyPrism/total?style=for-the-badge&logo=github&label=Downloads&color=207e5c)](https://github.com/yyyumeniku/HyPrism/releases)
-[![Website](https://img.shields.io/badge/Website-hyprism-207e5c?style=for-the-badge&logo=firefox)](https://yyyumeniku.github.io/hyprism-site/)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/yyyumeniku)
+[![Downloads](https://img.shields.io/github/downloads/7osteradev/HyVanila/total?style=for-the-badge&logo=github&label=Downloads&color=207e5c)](https://github.com/7osteradev/HyVanila/releases)
+[![Website](https://img.shields.io/badge/Website-hyvanila-207e5c?style=for-the-badge&logo=firefox)](https://github.com/7osteradev/HyVanila)
 
 A multiplatform Hytale launcher with mod manager and more!
 
@@ -14,7 +13,7 @@ A multiplatform Hytale launcher with mod manager and more!
 
 ## Security Notice
 
-**Antivirus false positives are expected for unsigned binaries.** HyPrism is open source and safe. See [SECURITY.md](SECURITY.md) for detailed explanation of why scanners flag it and what HyPrism actually does.
+**Antivirus false positives are expected for unsigned binaries.** HyVanila is open source and safe. See [SECURITY.md](SECURITY.md) for detailed explanation of why scanners flag it and what HyVanila actually does.
 
 ## Installation
 Downloads are available in releases

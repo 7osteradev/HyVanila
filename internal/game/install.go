@@ -8,10 +8,10 @@ import (
 	"runtime"
 	"sync"
 
-	"HyPrism/internal/env"
-	"HyPrism/internal/java"
-	"HyPrism/internal/pwr"
-	"HyPrism/internal/pwr/butler"
+	"HyVanila/internal/env"
+	"HyVanila/internal/java"
+	"HyVanila/internal/pwr"
+	"HyVanila/internal/pwr/butler"
 )
 
 var (

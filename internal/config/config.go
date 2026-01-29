@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"HyPrism/internal/env"
+	"HyVanila/internal/env"
 
 	"github.com/pelletier/go-toml/v2"
 )

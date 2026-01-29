@@ -84,7 +84,7 @@ export const NewsPreview: React.FC<NewsPreviewProps> = ({ getNews }) => {
                                     key={index}
                                     onClick={() => openLink(item.url)}
                                     disabled={loading}
-                                    className='flex gap-2 group hover:bg-white/5 p-1.5 rounded-lg transition-all cursor-pointer text-left w-full'
+                                    className='flex gap-2 group hover:bg-white/5 p-1.5 rounded-lg transition-all cursor-pointer text-start w-full'
                                 >
                                     {/* News Image */}
                                     {item.imageUrl && (

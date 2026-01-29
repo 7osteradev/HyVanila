@@ -47,11 +47,10 @@ export const OnlineToggle: React.FC<OnlineToggleProps> = ({ className }) => {
     return (
         <button
             onClick={handleToggle}
-            className={`w-12 h-12 rounded-xl glass border flex items-center justify-center active:scale-95 transition-all duration-150 relative group ${
-                isOnline
+            className={`w-12 h-12 rounded-xl glass border flex items-center justify-center active:scale-95 transition-all duration-150 relative group ${isOnline
                     ? 'border-green-500/30 text-green-400 hover:text-green-300 hover:bg-green-500/10'
                     : 'border-white/5 text-white/60 hover:text-white/80 hover:bg-white/5'
-            } ${className}`}
+                } ${className}`}
             title={isOnline ? t('Online Mode') : t('Offline Mode')}
         >
             {isOnline ? (
@@ -59,7 +58,7 @@ export const OnlineToggle: React.FC<OnlineToggleProps> = ({ className }) => {
             ) : (
                 <WifiOff size={20} />
             )}
-            <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+            <span className="absolute -top-10 start-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
                 {isOnline ? t('Online Mode (Click to disable)') : t('Offline Mode (Click to enable online)')}
             </span>
         </button>

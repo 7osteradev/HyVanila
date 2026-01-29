@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"HyPrism/internal/env"
+	"HyVanila/internal/env"
 )
 
 // Mod represents a mod

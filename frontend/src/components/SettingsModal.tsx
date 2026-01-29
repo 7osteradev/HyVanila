@@ -138,7 +138,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, onShowLog
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Sidebar */}
-                <div className="w-64 border-r border-white/5 bg-white/[0.02] p-4 flex flex-col gap-2">
+                <div className="w-64 border-e border-white/5 bg-white/[0.02] p-4 flex flex-col gap-2">
                     <div className="flex items-center gap-3 px-3 py-4 mb-2">
                         <div className="w-10 h-10 rounded-xl bg-[#FFA845]/20 flex items-center justify-center text-[#FFA845]">
                             <Settings size={22} />
@@ -163,7 +163,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, onShowLog
                             {activeTab === tab.id && (
                                 <motion.div
                                     layoutId="activeTab"
-                                    className="ml-auto w-1.5 h-1.5 rounded-full bg-[#FFA845]"
+                                    className="ms-auto w-1.5 h-1.5 rounded-full bg-[#FFA845]"
                                 />
                             )}
                         </button>
@@ -412,7 +412,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, onShowLog
                             <HardDrive size={14} />
                             <span>{t('Config saved automatically')}</span>
                         </div>
-                        <p className="text-[11px] text-white/20">HyPrism Launcher v1.0.0</p>
+                        <p className="text-[11px] text-white/20">HyVanila Launcher v1.0.0</p>
                     </div>
                 </div>
             </motion.div>

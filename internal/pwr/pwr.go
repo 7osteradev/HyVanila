@@ -1,8 +1,8 @@
 package pwr
 
 import (
-	"HyPrism/internal/util"
-	"HyPrism/internal/pwr/butler"
+	"HyVanila/internal/util"
+	"HyVanila/internal/pwr/butler"
 	"context"
 	"fmt"
 	"os"

@@ -1,9 +1,9 @@
 package app
 
 import (
-	"HyPrism/internal/env"
-	"HyPrism/internal/java"
-	"HyPrism/internal/pwr/butler"
+	"HyVanila/internal/env"
+	"HyVanila/internal/java"
+	"HyVanila/internal/pwr/butler"
 	"fmt"
 	"net"
 	"net/http"
@@ -177,7 +177,7 @@ func (a *App) SaveDiagnosticReport() (string, error) {
 	filename := fmt.Sprintf("diagnostic_%s.txt", time.Now().Format("2006-01-02_15-04-05"))
 	filepath := filepath.Join(logsDir, filename)
 
-	content := fmt.Sprintf(`HyPrism Diagnostic Report
+	content := fmt.Sprintf(`HyVanila Diagnostic Report
 Generated: %s
 
 === PLATFORM ===
