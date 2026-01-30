@@ -193,22 +193,104 @@ jobs:
       - name: Create AppImage (Linux)
         if: matrix.platform == 'linux'
         run: |
-          # Modern approach: Don't bundle WebKit, just require it as system dependency
-          # This is simpler, more reliable, and works better across different distros
-          
-          # Download appimagetool (latest version)
+          set -ex
+
+          # Download appimagetool
           wget -q -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool
-          
+
           # Create AppDir structure
           mkdir -p HyVanila.AppDir/usr/bin
           mkdir -p HyVanila.AppDir/usr/share/applications
           mkdir -p HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps
           mkdir -p HyVanila.AppDir/usr/share/metainfo
-          
+
           # Copy binary
           cp build/bin/HyVanila HyVanila.AppDir/usr/bin/
           chmod +x HyVanila.AppDir/usr/bin/HyVanila
+
+          # Save webkit40 binary for Flatpak later
+          cp build/bin/HyVanila-webkit40 /tmp/HyVanila-flatpak-binary
+
+          # Copy icon
+          convert build/appicon.png -resize 512x512 HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png || \
+            cp build/appicon.png HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png
+
+          cp HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png HyVanila.AppDir/hyvanila.png
+
+          # Desktop file
+          cat > HyVanila.AppDir/hyvanila.desktop << 'DESKTOP'
+          [Desktop Entry]
+          Name=HyVanila
+          Exec=HyVanila
+          Icon=hyvanila
+          Type=Application
+          Categories=Game;
+          Terminal=false
+          StartupWMClass=HyVanila
+          Comment=A modern launcher for Hytale
+          DESKTOP
+
+          cp HyVanila.AppDir/hyvanila.desktop HyVanila.AppDir/usr/share/applications/
+
+          # AppStream metadata
+          cat > HyVanila.AppDir/usr/share/metainfo/hyvanila.appdata.xml << 'APPDATA'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>dev.hyvanila.HyVanila</id>
+            <name>HyVanila</name>
+            <summary>A modern launcher for Hytale</summary>
+            <metadata_license>MIT</metadata_license>
+            <project_license>MIT</project_license>
+            <description>
+              <p>HyVanila is an open-source, community-driven launcher for Hytale.</p>
+            </description>
+            <categories>
+              <category>Game</category>
+            </categories>
+          </component>
+          APPDATA
+
+          # AppRun
+          cat > HyVanila.AppDir/AppRun << 'APPRUN'
+          #!/bin/bash
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+
+          export PATH="${HERE}/usr/bin:${PATH}"
+          export XDG_DATA_DIRS="${HERE}/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
+          # Check WebKit2GTK 4.1
+          if ! ldconfig -p 2>/dev/null | grep -q "libwebkit2gtk-4.1.so.0"; then
+            echo ""
+            echo "HyVanila requires WebKit2GTK 4.1"
+            echo ""
+            echo "Arch:   sudo pacman -S webkit2gtk-4.1"
+            echo "Ubuntu: sudo apt install libwebkit2gtk-4.1-0"
+            echo "Fedora: sudo dnf install webkit2gtk4.1"
+            echo ""
+            exit 1
+          fi
+
+          exec "${HERE}/usr/bin/HyVanila" "$@"
+          APPRUN
+
+          # Fix permissions (IMPORTANT)
+          chmod +x HyVanila.AppDir/AppRun
+
+          # Build AppImage
+          ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyVanila.AppDir HyVanila-x86_64.AppImage
+
+          # Replace build output
+          rm -rf build/bin/*
+          mv HyVanila-x86_64.AppImage build/bin/
+
+          # Create tar.gz fallback
+          cd HyVanila.AppDir/usr/bin
+          tar -czvf ../../../HyVanila-linux-x86_64.tar.gz HyVanila
+          cd ../../..
+          mv HyVanila-linux-x86_64.tar.gz build/bin/
+
  
           # Save the webkit40 binary for Flatpak packaging (for older distros)
           cp build/bin/HyVanila-webkit40 /tmp/HyVanila-flatpak-binary
