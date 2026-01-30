@@ -20,10 +20,13 @@ jobs:
         include:
           - platform: windows
             os: windows-latest
+            asset_name: HyVanila-windows-x64.zip
           - platform: linux
             os: ubuntu-22.04
+            asset_name: HyVanila-linux.AppImage
           - platform: macos
             os: macos-latest
+            asset_name: HyVanila-macos.zip
 
     runs-on: ${{ matrix.os }}
 
@@ -36,7 +39,7 @@ jobs:
         with:
           go-version: "1.22"
 
-      - name: Setup Node (for frontend / Wails)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -53,143 +56,165 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Build app (Wails)
+      - name: Build app
         run: |
           wails build -platform ${{ matrix.platform }} -clean
 
-      ##################################################
-      # LINUX — APPIMAGE + TAR.GZ
-      ##################################################
+      # Linux: Create AppImage
       - name: Create AppImage (Linux)
         if: matrix.platform == 'linux'
         run: |
           set -ex
-
+          
+          # Install required tools
+          sudo apt-get update
+          sudo apt-get install -y wget imagemagick
+          
           # Download appimagetool
           wget -q -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool
-
-          # Create AppDir structure
+          
+          # Create AppDir
           mkdir -p HyVanila.AppDir/usr/bin
           mkdir -p HyVanila.AppDir/usr/share/applications
           mkdir -p HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps
           mkdir -p HyVanila.AppDir/usr/share/metainfo
-
+          
           # Copy binary
           cp build/bin/HyVanila HyVanila.AppDir/usr/bin/
           chmod +x HyVanila.AppDir/usr/bin/HyVanila
-
-          # Save webkit40 binary for Flatpak later (optional)
-          if [ -f build/bin/HyVanila-webkit40 ]; then
-            cp build/bin/HyVanila-webkit40 /tmp/HyVanila-flatpak-binary
-          fi
-
+          
           # Copy icon
-          convert build/appicon.png -resize 512x512 HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png || \
-            cp build/appicon.png HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png
-
-          cp HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png HyVanila.AppDir/hyvanila.png
-
-          # Desktop file
-          cat > HyVanila.AppDir/hyvanila.desktop << 'DESKTOP'
-          [Desktop Entry]
-          Name=HyVanila
-          Exec=HyVanila
-          Icon=hyvanila
-          Type=Application
-          Categories=Game;
-          Terminal=false
-          StartupWMClass=HyVanila
-          Comment=A modern launcher for Hytale
-          DESKTOP
-
-          cp HyVanila.AppDir/hyvanila.desktop HyVanila.AppDir/usr/share/applications/
-
-          # AppStream metadata
-          cat > HyVanila.AppDir/usr/share/metainfo/hyvanila.appdata.xml << 'APPDATA'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <component type="desktop-application">
-            <id>dev.hyvanila.HyVanila</id>
-            <name>HyVanila</name>
-            <summary>A modern launcher for Hytale</summary>
-            <metadata_license>MIT</metadata_license>
-            <project_license>MIT</project_license>
-            <description>
-              <p>HyVanila is an open-source, community-driven launcher for Hytale.</p>
-            </description>
-            <categories>
-              <category>Game</category>
-            </categories>
-          </component>
-          APPDATA
-
-          # AppRun
-          cat > HyVanila.AppDir/AppRun << 'APPRUN'
-          #!/bin/bash
-          SELF=$(readlink -f "$0")
-          HERE=${SELF%/*}
-
-          export PATH="${HERE}/usr/bin:${PATH}"
-          export XDG_DATA_DIRS="${HERE}/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-
-          # Check WebKit2GTK 4.1
-          if ! ldconfig -p 2>/dev/null | grep -q "libwebkit2gtk-4.1.so.0"; then
-            echo ""
-            echo "HyVanila requires WebKit2GTK 4.1"
-            echo ""
-            echo "Arch:   sudo pacman -S webkit2gtk-4.1"
-            echo "Ubuntu: sudo apt install libwebkit2gtk-4.1-0"
-            echo "Fedora: sudo dnf install webkit2gtk4.1"
-            echo ""
-            exit 1
+          if [ -f build/appicon.png ]; then
+            convert build/appicon.png -resize 512x512 HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png
+            cp HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png HyVanila.AppDir/
+          else
+            # Create a dummy icon if not found
+            convert -size 512x512 xc:#007acc HyVanila.AppDir/hyvanila.png
           fi
+          
+          # Create desktop file
+          cat > HyVanila.AppDir/hyvanila.desktop << 'DESKTOP'
+[Desktop Entry]
+Name=HyVanila
+Exec=HyVanila
+Icon=hyvanila
+Type=Application
+Categories=Game;
+Terminal=false
+StartupWMClass=HyVanila
+Comment=A modern launcher for Hytale
+DESKTOP
+          
+          cp HyVanila.AppDir/hyvanila.desktop HyVanila.AppDir/usr/share/applications/
+          
+          # Create AppStream metadata
+          cat > HyVanila.AppDir/usr/share/metainfo/hyvanila.appdata.xml << 'APPDATA'
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dev.hyvanila.HyVanila</id>
+  <name>HyVanila</name>
+  <summary>A modern launcher for Hytale</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>HyVanila is an open-source, community-driven launcher for Hytale.</p>
+  </description>
+  <categories>
+    <category>Game</category>
+  </categories>
+</component>
+APPDATA
+          
+          # Create AppRun script
+          cat > HyVanila.AppDir/AppRun << 'APPRUN'
+#!/bin/bash
+SELF=$(readlink -f "$0")
+HERE=${SELF%/*}
 
-          exec "${HERE}/usr/bin/HyVanila" "$@"
-          APPRUN
+export PATH="${HERE}/usr/bin:${PATH}"
+export XDG_DATA_DIRS="${HERE}/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 
-          # Fix permissions
+# Check WebKit2GTK 4.1
+if ! ldconfig -p 2>/dev/null | grep -q "libwebkit2gtk-4.1.so.0"; then
+  echo ""
+  echo "HyVanila requires WebKit2GTK 4.1"
+  echo ""
+  echo "Arch:   sudo pacman -S webkit2gtk-4.1"
+  echo "Ubuntu: sudo apt install libwebkit2gtk-4.1-0"
+  echo "Fedora: sudo dnf install webkit2gtk4.1"
+  echo ""
+  exit 1
+fi
+
+exec "${HERE}/usr/bin/HyVanila" "$@"
+APPRUN
+          
           chmod +x HyVanila.AppDir/AppRun
-
+          
           # Build AppImage
           ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyVanila.AppDir HyVanila-x86_64.AppImage
-
-          # Replace build output
-          rm -rf build/bin/*
-          mv HyVanila-x86_64.AppImage build/bin/
-
-          # Create tar.gz fallback
+          
+          # Move to build directory
+          mkdir -p build/bin/linux
+          mv HyVanila-x86_64.AppImage build/bin/HyVanila-linux.AppImage
+          
+          # Create tar.gz as backup
           cd HyVanila.AppDir/usr/bin
-          tar -czvf ../../../HyVanila-linux-x86_64.tar.gz HyVanila
-          cd ../../..
-          mv HyVanila-linux-x86_64.tar.gz build/bin/
+          tar -czvf ../../../build/bin/HyVanila-linux-x86_64.tar.gz HyVanila
 
-      ##################################################
-      # WINDOWS — ZIP
-      ##################################################
+      # Windows: Create ZIP
       - name: Package Windows
         if: matrix.platform == 'windows'
         run: |
-          mkdir dist
-          powershell Compress-Archive build/bin/* dist/HyVanila-windows-x64.zip
+          mkdir -p dist
+          cd build/bin
+          Compress-Archive -Path * -DestinationPath ../dist/HyVanila-windows-x64.zip
+          cd ../..
 
-      ##################################################
-      # MACOS — ZIP
-      ##################################################
+      # macOS: Create ZIP
       - name: Package macOS
         if: matrix.platform == 'macos'
         run: |
-          mkdir dist
+          mkdir -p dist
           cd build/bin
           zip -r ../../dist/HyVanila-macos.zip .
           cd ../..
 
-      ##################################################
-      # RELEASE
-      ##################################################
-      - name: Upload Release
-        if: startsWith(github.ref, 'refs/tags/')
+      # Upload artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-build
+          path: |
+            dist/*
+            build/bin/*.AppImage
+            build/bin/*.tar.gz
+            build/bin/*.zip
+          retention-days: 5
+
+  # Create release only on tags
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          
+      - name: List files for debugging
+        run: find artifacts -type f -name "*"
+        
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/bin/*
-            dist/*
+            artifacts/**/*.AppImage
+            artifacts/**/*.tar.gz
+            artifacts/**/*.zip
+          generate_release_notes: true
