@@ -21,6 +21,6 @@ Downloads are available in releases
 ## Platform Support
 - Windows (fully supported)
 - macOS (ARM64)
-- 
+
 ## Credits
 Sanasol for maintaining and creating the auth server (https://github.com/sanasol/hytale-auth-server)
