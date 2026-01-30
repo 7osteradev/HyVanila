@@ -2,18 +2,18 @@ import requests
 from pathlib import Path
 import sys
 
-OWNER = "yyyumeniku"
-REPO = "HyPrism"
+OWNER = "7osteradev"
+REPO = "HyVanila"
 
 install_dir = (
     Path(sys.argv[1]).expanduser()
     if len(sys.argv) > 1
-    else Path.home() / "Applications" / "HyPrism"
+    else Path.home() / "Applications" / "HyVanila"
 )
 install_dir.mkdir(parents=True, exist_ok=True)
 
 api_url = f"https://api.github.com/repos/{OWNER}/{REPO}/releases/latest"
-headers = {"User-Agent": "HyPrism-installer"}
+headers = {"User-Agent": "HyVanila-Portable"}
 
 resp = requests.get(api_url, headers=headers)
 resp.raise_for_status()
@@ -31,7 +31,7 @@ if not asset_url:
 
 filename = install_dir / asset_url.split("/")[-1]
 
-print(f"Downloading HyPrism to: {filename}")
+print(f"Downloading HyVanila to: {filename}")
 
 with requests.get(asset_url, stream=True, headers=headers) as r:
     r.raise_for_status()
@@ -41,25 +41,25 @@ with requests.get(asset_url, stream=True, headers=headers) as r:
                 f.write(chunk)
 
 filename.chmod(0o755)
-print("HyPrism installed successfully!")
+print("HyVanila installed successfully!")
 
 def ins_shortuc(app_path, install_dir):
     desktop = Path.home() / "Desktop"
     desktop.mkdir(exist_ok=True)
-    shortcut_desktop = desktop / "HyPrism.desktop"
+    shortcut_desktop = desktop / "HyVanila.desktop"
 
     shortcut_local_dir = Path.home() / ".local" / "share" / "applications"
     shortcut_local_dir.mkdir(parents=True, exist_ok=True)
-    shortcut_local = shortcut_local_dir / "HyPrism.desktop"
+    shortcut_local = shortcut_local_dir / "HyVanila.desktop"
 
-    icon_src = Path(__file__).parent / "HyPrism_icon.png"
-    icon_dst = install_dir / "HyPrism_icon.png"
+    icon_src = Path(__file__).parent / "HyVanila_icon.png"
+    icon_dst = install_dir / "HyVanila_icon.png"
 
     if icon_src.exists() and not icon_dst.exists():
         icon_dst.write_bytes(icon_src.read_bytes())
 
     desktop_entry = f"""[Desktop Entry]
-Name=HyPrism
+Name=HyVanila
 Comment=Hytale Launcher
 Exec={app_path}
 TryExec={app_path}
@@ -67,7 +67,7 @@ Icon={icon_dst}
 Terminal=false
 Type=Application
 Categories=Game;
-StartupWMClass=HyPrism
+StartupWMClass=HyVanila
 """
     for shortcut in (shortcut_desktop, shortcut_local):
         shortcut.write_text(desktop_entry)

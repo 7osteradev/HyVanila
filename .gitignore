@@ -38,7 +38,7 @@ frontend/node_modules/
 build/bin/
 wails.json.bak
 frontend/src/assets/background.mp4
-HyPrism
+HyVanila
 
 # Flatpak build artifacts
 flatpak-repo/

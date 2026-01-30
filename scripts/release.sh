@@ -1,5 +1,5 @@
 #!/bin/bash
-# Release script for HyPrism
+# Release script for HyVanila
 # Usage: ./scripts/release.sh <version>
 # Example: ./scripts/release.sh 1.0.0
 
@@ -40,5 +40,5 @@ echo "GitHub Actions will now:"
 echo "  1. Build binaries for macOS (Intel & ARM), Windows, and Linux"
 echo "  2. Create a GitHub release with all binaries"
 echo ""
-echo "Check progress at: https://github.com/yyyumeniku/HyPrism/actions"
-echo "Release will be available at: https://github.com/yyyumeniku/HyPrism/releases/tag/$TAG"
+echo "Check progress at: https://github.com/7osteradev/HyVanila/actions"
+echo "Release will be available at: https://github.com/7osteradev/HyVanila/releases/tag/$TAG"

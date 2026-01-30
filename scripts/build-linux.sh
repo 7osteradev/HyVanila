@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Linux Build Script for HyPrism
+# Linux Build Script for HyVanila
 # Usage: ./scripts/build-linux.sh [version]
 # Example: ./scripts/build-linux.sh 1.0.24
 
@@ -24,10 +24,10 @@ else
     VERSION="$1"
 fi
 
-APP_TITLE="HyPrism - Hytale Launcher"
+APP_TITLE="HyVanila - Hytale Launcher"
 
 echo -e "${GREEN}╔══════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║       Building HyPrism for Linux (AMD64)            ║${NC}"
+echo -e "${GREEN}║       Building HyVanila for Linux (AMD64)            ║${NC}"
 echo -e "${GREEN}║       Version: $VERSION${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════════════════════╝${NC}"
 
@@ -63,7 +63,7 @@ fi
 
 # Build webkit2_41 version for AppImage (modern systems)
 echo -e "${YELLOW}Building AppImage version (webkit2gtk-4.1)...${NC}"
-wails build -clean -tags webkit2_41 -ldflags "-X 'HyPrism/app.AppVersion=$VERSION' -X 'HyPrism/app.AppTitle=$APP_TITLE'"
+wails build -clean -tags webkit2_41 -ldflags "-X 'HyVanila/app.AppVersion=$VERSION' -X 'HyVanila/app.AppTitle=$APP_TITLE'"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}Build failed!${NC}"
@@ -71,12 +71,12 @@ if [ $? -ne 0 ]; then
 fi
 
 # Save webkit41 binary for AppImage
-cp build/bin/HyPrism /tmp/HyPrism-webkit41
+cp build/bin/HyVanila /tmp/HyVanila-webkit41
 echo -e "${GREEN}✓ webkit41 build completed${NC}"
 
 # Build webkit2gtk-4.0 version for Flatpak (older distros)
 echo -e "${YELLOW}Building Flatpak version (webkit2gtk-4.0)...${NC}"
-wails build -clean -ldflags "-X 'HyPrism/app.AppVersion=$VERSION' -X 'HyPrism/app.AppTitle=$APP_TITLE'"
+wails build -clean -ldflags "-X 'HyVanila/app.AppVersion=$VERSION' -X 'HyVanila/app.AppTitle=$APP_TITLE'"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}Build failed!${NC}"
@@ -84,11 +84,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Save webkit40 binary for Flatpak
-mv build/bin/HyPrism build/bin/HyPrism-webkit40
+mv build/bin/HyVanila build/bin/HyVanila-webkit40
 echo -e "${GREEN}✓ webkit40 build completed${NC}"
 
 # Restore webkit41 as main binary for AppImage
-mv /tmp/HyPrism-webkit41 build/bin/HyPrism
+mv /tmp/HyVanila-webkit41 build/bin/HyVanila
 
 # Create releases directory
 mkdir -p releases
@@ -104,50 +104,50 @@ if [ ! -f "appimagetool" ]; then
 fi
 
 # Create AppDir structure
-rm -rf HyPrism.AppDir
-mkdir -p HyPrism.AppDir/usr/bin
-mkdir -p HyPrism.AppDir/usr/share/applications
-mkdir -p HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps
-mkdir -p HyPrism.AppDir/usr/share/metainfo
+rm -rf HyVanila.AppDir
+mkdir -p HyVanila.AppDir/usr/bin
+mkdir -p HyVanila.AppDir/usr/share/applications
+mkdir -p HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps
+mkdir -p HyVanila.AppDir/usr/share/metainfo
 
 # Copy binary
-cp build/bin/HyPrism HyPrism.AppDir/usr/bin/
-chmod +x HyPrism.AppDir/usr/bin/HyPrism
+cp build/bin/HyVanila HyVanila.AppDir/usr/bin/
+chmod +x HyVanila.AppDir/usr/bin/HyVanila
 
 # Copy/create icon
 if [ -f "build/appicon.png" ]; then
-    cp build/appicon.png HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps/hyprism.png
-    cp build/appicon.png HyPrism.AppDir/hyprism.png
+    cp build/appicon.png HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/HyVanila.png
+    cp build/appicon.png HyVanila.AppDir/HyVanila.png
 else
     echo -e "${YELLOW}Warning: build/appicon.png not found${NC}"
 fi
 
 # Create desktop file
-cat > HyPrism.AppDir/hyprism.desktop << 'DESKTOP'
+cat > HyVanila.AppDir/HyVanila.desktop << 'DESKTOP'
 [Desktop Entry]
-Name=HyPrism
-Exec=HyPrism
-Icon=hyprism
+Name=HyVanila
+Exec=HyVanila
+Icon=HyVanila
 Type=Application
 Categories=Game;
 Terminal=false
-StartupWMClass=HyPrism
+StartupWMClass=HyVanila
 Comment=A modern launcher for Hytale
 DESKTOP
 
-cp HyPrism.AppDir/hyprism.desktop HyPrism.AppDir/usr/share/applications/
+cp HyVanila.AppDir/HyVanila.desktop HyVanila.AppDir/usr/share/applications/
 
 # Create AppStream metadata
-cat > HyPrism.AppDir/usr/share/metainfo/hyprism.appdata.xml << 'APPDATA'
+cat > HyVanila.AppDir/usr/share/metainfo/HyVanila.appdata.xml << 'APPDATA'
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>dev.hyprism.HyPrism</id>
-  <name>HyPrism</name>
+  <id>dev.hyvanila.HyVanila</id>
+  <name>HyVanila</name>
   <summary>A modern launcher for Hytale</summary>
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
   <description>
-    <p>HyPrism is an open-source, community-driven launcher for Hytale that provides mod management, multiple instances, and more.</p>
+    <p>HyVanila is an open-source, community-driven launcher for Hytale that provides mod management, multiple instances, and more.</p>
   </description>
   <categories>
     <category>Game</category>
@@ -156,7 +156,7 @@ cat > HyPrism.AppDir/usr/share/metainfo/hyprism.appdata.xml << 'APPDATA'
 APPDATA
 
 # Create AppRun
-cat > HyPrism.AppDir/AppRun << 'APPRUN'
+cat > HyVanila.AppDir/AppRun << 'APPRUN'
 #!/bin/bash
 SELF=$(readlink -f "$0")
 HERE=${SELF%/*}
@@ -169,13 +169,13 @@ if ! ldconfig -p 2>/dev/null | grep -q "libwebkit2gtk-4.1.so.0"; then
     exit 1
 fi
 
-exec "${HERE}/usr/bin/HyPrism" "$@"
+exec "${HERE}/usr/bin/HyVanila" "$@"
 APPRUN
-chmod +x HyPrism.AppDir/AppRun
+chmod +x HyVanila.AppDir/AppRun
 
 # Build AppImage
-APPIMAGE_NAME="HyPrism-v${VERSION}-x86_64.AppImage"
-ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyPrism.AppDir "$APPIMAGE_NAME"
+APPIMAGE_NAME="HyVanila-v${VERSION}-x86_64.AppImage"
+ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyVanila.AppDir "$APPIMAGE_NAME"
 
 if [ $? -eq 0 ]; then
     mv "$APPIMAGE_NAME" releases/
@@ -205,20 +205,20 @@ else
     cd flatpak
     
     # Copy webkit40 binary
-    cp ../build/bin/HyPrism-webkit40 HyPrism
-    chmod +x HyPrism
+    cp ../build/bin/HyVanila-webkit40 HyVanila
+    chmod +x HyVanila
     
     # Copy icon if needed
     if [ -f "../build/appicon.png" ]; then
-        cp ../build/appicon.png dev.hyprism.HyPrism.png
+        cp ../build/appicon.png dev.hyvanila.HyVanila.png
     fi
     
     # Build Flatpak
-    flatpak-builder --force-clean --repo=repo builddir dev.hyprism.HyPrism.json
+    flatpak-builder --force-clean --repo=repo builddir dev.hyvanila.HyVanila.json
     
     # Create bundle
-    FLATPAK_NAME="HyPrism-v${VERSION}.flatpak"
-    flatpak build-bundle repo "$FLATPAK_NAME" dev.hyprism.HyPrism
+    FLATPAK_NAME="HyVanila-v${VERSION}.flatpak"
+    flatpak build-bundle repo "$FLATPAK_NAME" dev.hyvanila.HyVanila
     
     if [ $? -eq 0 ]; then
         mv "$FLATPAK_NAME" ../releases/
@@ -227,7 +227,7 @@ else
     fi
     
     # Cleanup
-    rm -f HyPrism dev.hyprism.HyPrism.png
+    rm -f HyVanila dev.hyvanila.HyVanila.png
     rm -rf repo builddir .flatpak-builder
     
     cd ..
@@ -235,13 +235,13 @@ fi
 
 # ========== Create tar.gz ==========
 echo -e "${YELLOW}Creating tar.gz archive...${NC}"
-TARBALL_NAME="HyPrism-v${VERSION}-linux-x86_64.tar.gz"
-tar -czf "releases/$TARBALL_NAME" -C build/bin HyPrism
+TARBALL_NAME="HyVanila-v${VERSION}-linux-x86_64.tar.gz"
+tar -czf "releases/$TARBALL_NAME" -C build/bin HyVanila
 echo -e "${GREEN}✓ Tarball created: releases/$TARBALL_NAME${NC}"
 echo -e "${GREEN}✓ Size: $(du -h "releases/$TARBALL_NAME" | cut -f1)${NC}"
 
 # Cleanup
-rm -rf HyPrism.AppDir
+rm -rf HyVanila.AppDir
 
 echo -e "${GREEN}╔══════════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║       Build Complete!                                ║${NC}"
@@ -249,4 +249,4 @@ echo -e "${GREEN}║       Output: releases/                              ║${N
 echo -e "${GREEN}╚══════════════════════════════════════════════════════╝${NC}"
 
 echo -e "${YELLOW}To upload to GitHub release, run:${NC}"
-echo "gh release upload v${VERSION} releases/HyPrism-v${VERSION}-*"
+echo "gh release upload v${VERSION} releases/HyVanila-v${VERSION}-*"

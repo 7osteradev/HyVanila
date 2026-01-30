@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>dev.hyprism.HyPrism</id>
-  <name>HyPrism</name>
+  <id>dev.hyvanila.HyVanila</id>
+  <name>HyVanila</name>
   <summary>A modern launcher for Hytale</summary>
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
   
   <description>
     <p>
-      HyPrism is an open-source, community-driven launcher for Hytale that provides
+      HyVanila is an open-source, community-driven launcher for Hytale that provides
       advanced mod management, multiple game instances, and seamless updates.
     </p>
     <p>Features include:</p>
@@ -21,22 +21,22 @@
     </ul>
   </description>
   
-  <launchable type="desktop-id">dev.hyprism.HyPrism.desktop</launchable>
+  <launchable type="desktop-id">dev.hyvanila.HyVanila.desktop</launchable>
   
   <screenshots>
     <screenshot type="default">
-      <caption>HyPrism main launcher interface</caption>
-      <image>https://raw.githubusercontent.com/yyyumeniku/HyPrism/main/assets/screenshot.png</image>
+      <caption>HyVanila main launcher interface</caption>
+      <image>https://raw.githubusercontent.com/7osteradev/HyVanila/main/assets/screenshot.png</image>
     </screenshot>
   </screenshots>
   
-  <url type="homepage">https://github.com/yyyumeniku/HyPrism</url>
-  <url type="bugtracker">https://github.com/yyyumeniku/HyPrism/issues</url>
+  <url type="homepage">https://github.com/7osteradev/HyVanila</url>
+  <url type="bugtracker">https://github.com/7osteradev/HyVanila/issues</url>
   
-  <developer_name>HyPrism Team</developer_name>
+  <developer_name>HyVanila Team</developer_name>
   
   <provides>
-    <binary>HyPrism</binary>
+    <binary>HyVanila</binary>
   </provides>
   
   <categories>
@@ -56,7 +56,7 @@
   <releases>
     <release version="1.0.0" date="2025-01-01">
       <description>
-        <p>Initial release of HyPrism launcher</p>
+        <p>Initial release of HyVanila launcher</p>
       </description>
     </release>
   </releases>

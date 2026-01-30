@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build Flatpak for HyPrism
+# Build Flatpak for HyVanila
 # Requires: flatpak-builder, flatpak
 
 set -e
@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "Building HyPrism Flatpak..."
+echo "Building HyVanila Flatpak..."
 
 # Check if required tools are installed
 if ! command -v flatpak-builder &> /dev/null; then
@@ -25,7 +25,7 @@ flatpak install -y flathub org.freedesktop.Sdk.Extension.node18//23.08 || true
 
 # Build the Wails binary first
 cd "$PROJECT_DIR"
-echo "Building HyPrism binary with Wails..."
+echo "Building HyVanila binary with Wails..."
 if ! command -v wails &> /dev/null; then
     echo "Error: wails is not installed"
     echo "Install with: go install github.com/wailsapp/wails/v2/cmd/wails@latest"
@@ -36,14 +36,14 @@ wails build -clean -tags webkit2_41
 
 # Prepare files for Flatpak
 echo "Preparing Flatpak assets..."
-cp build/bin/HyPrism flatpak/HyPrism
-chmod +x flatpak/HyPrism
+cp build/bin/HyVanila flatpak/HyVanila
+chmod +x flatpak/HyVanila
 
 # Resize icon to 512x512 if ImageMagick is available
 if command -v convert &> /dev/null; then
-    convert build/appicon.png -resize 512x512 flatpak/dev.hyprism.HyPrism.png
+    convert build/appicon.png -resize 512x512 flatpak/dev.hyvanila.HyVanila.png
 else
-    cp build/appicon.png flatpak/dev.hyprism.HyPrism.png
+    cp build/appicon.png flatpak/dev.hyvanila.HyVanila.png
 fi
 
 # Build the Flatpak
@@ -52,19 +52,19 @@ flatpak-builder \
     --repo=flatpak-repo \
     --state-dir=.flatpak-builder \
     flatpak-build \
-    flatpak/dev.hyprism.HyPrism.json
+    flatpak/dev.hyvanila.HyVanila.json
 
 # Create a bundle for distribution
 echo "Creating Flatpak bundle..."
-flatpak build-bundle flatpak-repo HyPrism.flatpak dev.hyprism.HyPrism
+flatpak build-bundle flatpak-repo HyVanila.flatpak dev.hyvanila.HyVanila
 
 # Clean up temporary files
 echo "Cleaning up..."
-rm -f flatpak/HyPrism flatpak/dev.hyprism.HyPrism.png
+rm -f flatpak/HyVanila flatpak/dev.hyvanila.HyVanila.png
 
 echo ""
 echo "Build complete!"
-echo "Flatpak bundle: HyPrism.flatpak"
+echo "Flatpak bundle: HyVanila.flatpak"
 echo ""
-echo "To install locally: flatpak install HyPrism.flatpak"
-echo "To run: flatpak run dev.hyprism.HyPrism"
+echo "To install locally: flatpak install HyVanila.flatpak"
+echo "To run: flatpak run dev.HyVanila.HyVanila"

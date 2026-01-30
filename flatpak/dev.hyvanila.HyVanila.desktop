@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=HyPrism
+Name=HyVanila
 Comment=A modern launcher for Hytale
-Exec=HyPrism
-Icon=dev.hyprism.HyPrism
+Exec=HyVanila
+Icon=dev.hyvanila.HyVanila
 Terminal=false
 Type=Application
 Categories=Game;
 Keywords=hytale;launcher;gaming;mods;
-StartupWMClass=HyPrism
+StartupWMClass=HyVanila
 StartupNotify=true

@@ -1,10 +1,10 @@
-# HyPrism Linux Installer
+# HyVanila Linux Installer
 
-This document explains how to install and run HyPrism on Linux using the provided bash script.
+This document explains how to install and run HyVanila on Linux using the provided bash script.
 
 ## Features
 
-* Downloads the latest `x86_64` AppImage from the official HyPrism GitHub releases.
+* Downloads the latest `x86_64` AppImage from the official HyVanila GitHub releases.
 * Makes the AppImage executable.
 * Creates Desktop and application menu shortcuts (`.desktop` files) with proper icons.
 * Automatically sets up a Python virtual environment and installs required dependencies (`requests`).
@@ -29,7 +29,7 @@ chmod +x install.sh
 ./install.sh [installation_directory]
 ```
 
-* `[installation_directory]` is optional. Default is `~/Applications/HyPrism`.
+* `[installation_directory]` is optional. Default is `~/Applications/HyVanila`.
 
 3. The script will:
 
@@ -40,11 +40,11 @@ chmod +x install.sh
 
 4. When prompted, type `y` to create shortcuts:
 
-   * Desktop: `~/Desktop/HyPrism.desktop`
-   * Application menu: `~/.local/share/applications/HyPrism.desktop`
+   * Desktop: `~/Desktop/HyVanila.desktop`
+   * Application menu: `~/.local/share/applications/HyVanila.desktop`
 
 ## Notes
 
 * Tested on Arch Linux. Should work on most Linux distributions with Python 3 and bash.
-* If the icon does not appear in the menu, ensure `HyPrism_icon.png` is in the installation directory.
+* If the icon does not appear in the menu, ensure `HyVanila_icon.png` is in the installation directory.
 * You can re-run the installer at any time to update AppImage or recreate shortcuts.

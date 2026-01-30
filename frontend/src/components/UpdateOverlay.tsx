@@ -44,7 +44,7 @@ export const UpdateOverlay: React.FC<UpdateOverlayProps> = ({ progress, download
       </h1>
 
       <p className="text-gray-400 mb-12 max-w-md text-lg font-medium">
-        {t('Please wait while we download and install the latest version of HyPrism.')}
+        {t('Please wait while we download and install the latest version of HyVanila.')}
       </p>
 
       {/* Progress bar */}

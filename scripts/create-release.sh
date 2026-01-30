@@ -63,37 +63,37 @@ fi
 
 # Create release notes
 RELEASE_NOTES=$(cat << EOF
-## HyPrism ${VERSION}
+## HyVanila ${VERSION}
 
 ### Installation
 
 **macOS (Apple Silicon)**
-- Download \`HyPrism-v${VERSION}-macOS-arm64.dmg\`
-- Open the DMG and drag HyPrism to Applications
-- If you get a security warning, run \`Fix-HyPrism.command\` from the DMG
+- Download \`HyVanila-v${VERSION}-macOS-arm64.dmg\`
+- Open the DMG and drag HyVanila to Applications
+- If you get a security warning, run \`Fix-HyVanila.command\` from the DMG
 
 **Linux**
 - **Flatpak** (recommended for older distros like Ubuntu 22.04):
   \`\`\`bash
-  flatpak install HyPrism-v${VERSION}.flatpak
-  flatpak run dev.hyprism.HyPrism
+  flatpak install HyVanila-v${VERSION}.flatpak
+  flatpak run dev.hyvanila.HyVanila
   \`\`\`
 
 - **AppImage** (modern systems):
   \`\`\`bash
-  chmod +x HyPrism-v${VERSION}-x86_64.AppImage
-  ./HyPrism-v${VERSION}-x86_64.AppImage
+  chmod +x HyVanila-v${VERSION}-x86_64.AppImage
+  ./HyVanila-v${VERSION}-x86_64.AppImage
   \`\`\`
 
 - **Tar.gz** (manual installation):
   \`\`\`bash
-  tar -xzf HyPrism-v${VERSION}-linux-x86_64.tar.gz
-  ./HyPrism
+  tar -xzf HyVanila-v${VERSION}-linux-x86_64.tar.gz
+  ./HyVanila
   \`\`\`
 
 **Windows**
-- Download \`HyPrism-v${VERSION}-windows-amd64.zip\` (if available)
-- Extract and run \`HyPrism.exe\`
+- Download \`HyVanila-Portable.exe\`
+- Run \`HyVanila-Portable.exe\`
 
 ### Changes
 <!-- Add your changelog here -->
@@ -102,7 +102,7 @@ RELEASE_NOTES=$(cat << EOF
 - Flatpak version uses GNOME Runtime 42 for compatibility with older distros
 - AppImage requires webkit2gtk-4.1 (use Flatpak for older systems)
 
-**Full Changelog**: https://github.com/yyyumeniku/HyPrism/compare/v${VERSION}...HEAD
+**Full Changelog**: https://github.com/7osteradev/HyVanila/compare/v${VERSION}...HEAD
 EOF
 )
 
@@ -116,7 +116,7 @@ gh release create "${TAG}" \
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}╔══════════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║       Release Created Successfully!                  ║${NC}"
-    echo -e "${GREEN}║       View at: https://github.com/yyyumeniku/HyPrism/releases/tag/${TAG}${NC}"
+    echo -e "${GREEN}║       View at: https://github.com/7osteradev/HyVanila/releases/tag/${TAG}${NC}"
     echo -e "${GREEN}╚══════════════════════════════════════════════════════╝${NC}"
 else
     echo -e "${RED}Failed to create release${NC}"

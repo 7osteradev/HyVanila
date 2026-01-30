@@ -28,7 +28,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({ error, onClose }) => {
   const reportIssue = () => {
     const title = encodeURIComponent(`[Bug] ${error.type}: ${error.message}`);
     const body = encodeURIComponent(
-`## Description
+      `## Description
 <!-- Please describe what you were doing when the error occurred -->
 
 ## Error Details
@@ -50,7 +50,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({ error, onClose }) => {
 <!-- Add any other context about the problem here -->
 `
     );
-    const url = `https://github.com/yyyumeniku/HyPrism/issues/new?title=${title}&body=${body}&labels=bug`;
+    const url = `https://github.com/7osteradev/HyVanila/issues/new?title=${title}&body=${body}&labels=bug`;
     BrowserOpenURL(url);
   };
 

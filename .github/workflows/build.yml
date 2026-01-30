@@ -59,36 +59,41 @@ jobs:
           # Extract version from tag or use branch name
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF#refs/tags/v}"
-            APP_TITLE="HyPrism - Hytale Launcher"
+            APP_TITLE="HyVanila - Hytale Launcher"
           elif [[ "${GITHUB_REF}" == refs/heads/nightly ]]; then
             # For nightly builds, use commit short SHA
             VERSION="nightly-$(git rev-parse --short HEAD)"
-            APP_TITLE="HyPrism Nightly - Hytale Launcher"
+            APP_TITLE="HyVanila Nightly - Hytale Launcher"
           elif [[ "${GITHUB_REF}" == refs/heads/main ]]; then
             # For main branch without tag, get latest version from git tags
             LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
             VERSION="${LATEST_TAG#v}-dev"
-            APP_TITLE="HyPrism Dev - Hytale Launcher"
+            APP_TITLE="HyVanila Dev - Hytale Launcher"
           else
             VERSION="dev"
-            APP_TITLE="HyPrism - Hytale Launcher"
+            APP_TITLE="HyVanila - Hytale Launcher"
           fi
           
           echo "Building version: $VERSION"
           echo "App title: $APP_TITLE"
           
           # Build with webkit2gtk-4.1 for AppImage (modern systems)
-          wails build -clean -tags webkit2_41 -ldflags "-X 'HyPrism/app.AppVersion=$VERSION' -X 'HyPrism/app.AppTitle=$APP_TITLE'"
+          wails build -clean -tags webkit2_41 -ldflags "-X 'HyVanila/app.AppVersion=$VERSION' -X 'HyVanila/app.AppTitle=$APP_TITLE'"
           
           # On Linux, also build with webkit2gtk-4.0 for Flatpak (older distros like PopOS 22.04)
           if [[ "${{ matrix.platform }}" == "linux" ]]; then
             # Save webkit41 binary before building webkit40 (which uses -clean)
-            cp build/bin/HyPrism /tmp/HyPrism-webkit41
+            cp build/bin/HyVanila /tmp/HyVanila-webkit41
             echo "Building legacy version with webkit2gtk-4.0 for Flatpak..."
-            wails build -clean -ldflags "-X 'HyPrism/app.AppVersion=$VERSION' -X 'HyPrism/app.AppTitle=$APP_TITLE'"
-            mv build/bin/HyPrism build/bin/HyPrism-webkit40
+            wails build -clean -ldflags "-X 'HyVanila/app.AppVersion=$VERSION' -X 'HyVanila/app.AppTitle=$APP_TITLE'"
+            mv build/bin/HyVanila build/bin/HyVanila-webkit40
             # Restore webkit41 as main binary for AppImage
-            mv /tmp/HyPrism-webkit41 build/bin/HyPrism
+            mv /tmp/HyVanila-webkit41 build/bin/HyVanila
+          fi
+
+          # On Windows, rename binary to HyVanila-Portable.exe
+          if [[ "${{ matrix.platform }}" == "windows" ]]; then
+            mv build/bin/HyVanila.exe build/bin/HyVanila-Portable.exe
           fi
       
       - name: Create DMG (macOS)
@@ -98,13 +103,13 @@ jobs:
           brew install create-dmg
           
           # Sign the app bundle BEFORE creating DMG
-          echo "Signing HyPrism.app..."
+          echo "Signing HyVanila.app..."
           # Remove quarantine attributes
-          xattr -cr build/bin/HyPrism.app || true
+          xattr -cr build/bin/HyVanila.app || true
           # Ad-hoc sign the app bundle
-          codesign --force --deep --sign - build/bin/HyPrism.app || {
+          codesign --force --deep --sign - build/bin/HyVanila.app || {
             echo "Warning: Codesign failed, trying without deep flag..."
-            codesign --force --sign - build/bin/HyPrism.app || true
+            codesign --force --sign - build/bin/HyVanila.app || true
           }
           echo "App signed successfully"
           
@@ -112,51 +117,51 @@ jobs:
           mkdir -p dmg-contents
           
           # Move only the .app bundle to dmg-contents
-          mv build/bin/HyPrism.app dmg-contents/
+          mv build/bin/HyVanila.app dmg-contents/
           
           # Create a helper script to remove quarantine from Applications
-          cat > dmg-contents/Fix-HyPrism.command << 'HELPER'
+          cat > dmg-contents/Fix-HyVanila.command << 'HELPER'
           #!/bin/bash
           clear
           echo ""
           echo "╔══════════════════════════════════════════════════════╗"
-          echo "║       HyPrism - Fix macOS Security Warning           ║"
+          echo "║       HyVanila - Fix macOS Security Warning           ║"
           echo "╚══════════════════════════════════════════════════════╝"
           echo ""
           
-          # Check common locations for HyPrism.app
+          # Check common locations for HyVanila.app
           APP_PATH=""
-          if [ -d "/Applications/HyPrism.app" ]; then
-              APP_PATH="/Applications/HyPrism.app"
-          elif [ -d "$HOME/Applications/HyPrism.app" ]; then
-              APP_PATH="$HOME/Applications/HyPrism.app"
-          elif [ -d "$(dirname "$0")/HyPrism.app" ]; then
-              APP_PATH="$(dirname "$0")/HyPrism.app"
+          if [ -d "/Applications/HyVanila.app" ]; then
+              APP_PATH="/Applications/HyVanila.app"
+          elif [ -d "$HOME/Applications/HyVanila.app" ]; then
+              APP_PATH="$HOME/Applications/HyVanila.app"
+          elif [ -d "$(dirname "$0")/HyVanila.app" ]; then
+              APP_PATH="$(dirname "$0")/HyVanila.app"
           fi
           
           if [ -z "$APP_PATH" ]; then
-              echo "❌ HyPrism.app not found!"
+              echo "❌ HyVanila.app not found!"
               echo ""
-              echo "Please drag HyPrism.app to your Applications folder first,"
+              echo "Please drag HyVanila.app to your Applications folder first,"
               echo "then run this script again."
               echo ""
               echo "Or run manually in Terminal:"
-              echo "  xattr -cr /path/to/HyPrism.app"
+              echo "  xattr -cr /path/to/HyVanila.app"
               echo ""
               read -p "Press Enter to close..."
               exit 1
           fi
           
-          echo "Found HyPrism at: $APP_PATH"
+          echo "Found HyVanila at: $APP_PATH"
           echo ""
           echo "Removing quarantine attribute..."
           xattr -cr "$APP_PATH"
           
           if [ $? -eq 0 ]; then
               echo ""
-              echo "✅ Success! HyPrism is now ready to use."
+              echo "✅ Success! HyVanila is now ready to use."
               echo ""
-              echo "You can now open HyPrism from your Applications folder."
+              echo "You can now open HyVanila from your Applications folder."
           else
               echo ""
               echo "❌ Failed to remove quarantine. Try running manually:"
@@ -166,24 +171,24 @@ jobs:
           echo ""
           read -p "Press Enter to close..."
           HELPER
-          chmod +x dmg-contents/Fix-HyPrism.command
+          chmod +x dmg-contents/Fix-HyVanila.command
           
           # Create DMG from clean directory
           create-dmg \
-            --volname "HyPrism" \
+            --volname "HyVanila" \
             --window-pos 200 120 \
             --window-size 700 400 \
             --icon-size 100 \
-            --icon "HyPrism.app" 175 120 \
-            --hide-extension "HyPrism.app" \
+            --icon "HyVanila.app" 175 120 \
+            --hide-extension "HyVanila.app" \
             --app-drop-link 525 120 \
-            --icon "Fix-HyPrism.command" 350 280 \
-            "HyPrism-macOS-arm64.dmg" \
+            --icon "Fix-HyVanila.command" 350 280 \
+            "HyVanila-macOS-arm64.dmg" \
             "dmg-contents"
           
           # Clean build/bin and put only DMG there
           rm -rf build/bin/*
-          mv HyPrism-macOS-arm64.dmg build/bin/
+          mv HyVanila-macOS-arm64.dmg build/bin/
       
       - name: Create AppImage (Linux)
         if: matrix.platform == 'linux'
@@ -196,51 +201,51 @@ jobs:
           chmod +x appimagetool
           
           # Create AppDir structure
-          mkdir -p HyPrism.AppDir/usr/bin
-          mkdir -p HyPrism.AppDir/usr/share/applications
-          mkdir -p HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps
-          mkdir -p HyPrism.AppDir/usr/share/metainfo
+          mkdir -p HyVanila.AppDir/usr/bin
+          mkdir -p HyVanila.AppDir/usr/share/applications
+          mkdir -p HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps
+          mkdir -p HyVanila.AppDir/usr/share/metainfo
           
           # Copy binary
-          cp build/bin/HyPrism HyPrism.AppDir/usr/bin/
-          chmod +x HyPrism.AppDir/usr/bin/HyPrism
-
+          cp build/bin/HyVanila HyVanila.AppDir/usr/bin/
+          chmod +x HyVanila.AppDir/usr/bin/HyVanila
+ 
           # Save the webkit40 binary for Flatpak packaging (for older distros)
-          cp build/bin/HyPrism-webkit40 /tmp/HyPrism-flatpak-binary
+          cp build/bin/HyVanila-webkit40 /tmp/HyVanila-flatpak-binary
           
           # Copy icon at 512x512 for high resolution displays
-          convert build/appicon.png -resize 512x512 HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps/hyprism.png || {
-            cp build/appicon.png HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps/hyprism.png
+          convert build/appicon.png -resize 512x512 HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png || {
+            cp build/appicon.png HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png
           }
-          cp HyPrism.AppDir/usr/share/icons/hicolor/512x512/apps/hyprism.png HyPrism.AppDir/hyprism.png
+          cp HyVanila.AppDir/usr/share/icons/hicolor/512x512/apps/hyvanila.png HyVanila.AppDir/hyvanila.png
           
           # Create desktop file (must be at root of AppDir)
-          cat > HyPrism.AppDir/hyprism.desktop << 'DESKTOP'
+          cat > HyVanila.AppDir/hyvanila.desktop << 'DESKTOP'
           [Desktop Entry]
-          Name=HyPrism
-          Exec=HyPrism
-          Icon=hyprism
+          Name=HyVanila
+          Exec=HyVanila
+          Icon=hyvanila
           Type=Application
           Categories=Game;
           Terminal=false
-          StartupWMClass=HyPrism
+          StartupWMClass=HyVanila
           Comment=A modern launcher for Hytale
           DESKTOP
           
           # Copy desktop file to standard location too
-          cp HyPrism.AppDir/hyprism.desktop HyPrism.AppDir/usr/share/applications/
+          cp HyVanila.AppDir/hyvanila.desktop HyVanila.AppDir/usr/share/applications/
           
           # Create AppStream metadata (helps with SteamOS integration)
-          cat > HyPrism.AppDir/usr/share/metainfo/hyprism.appdata.xml << 'APPDATA'
+          cat > HyVanila.AppDir/usr/share/metainfo/hyvanila.appdata.xml << 'APPDATA'
           <?xml version="1.0" encoding="UTF-8"?>
           <component type="desktop-application">
-            <id>dev.hyprism.HyPrism</id>
-            <name>HyPrism</name>
+            <id>dev.hyvanila.HyVanila</id>
+            <name>HyVanila</name>
             <summary>A modern launcher for Hytale</summary>
             <metadata_license>MIT</metadata_license>
             <project_license>MIT</project_license>
             <description>
-              <p>HyPrism is an open-source, community-driven launcher for Hytale that provides mod management, multiple instances, and more.</p>
+              <p>HyVanila is an open-source, community-driven launcher for Hytale that provides mod management, multiple instances, and more.</p>
             </description>
             <categories>
               <category>Game</category>
@@ -249,9 +254,9 @@ jobs:
           APPDATA
           
           # Create simple AppRun - no complex bundling, just use system WebKit
-          cat > HyPrism.AppDir/AppRun << 'APPRUN'
+          cat > HyVanila.AppDir/AppRun << 'APPRUN'
           #!/bin/bash
-          # Simple AppRun for HyPrism
+          # Simple AppRun for HyVanila
           
           SELF=$(readlink -f "$0")
           HERE=${SELF%/*}
@@ -266,10 +271,10 @@ jobs:
             # Terminal message (always shown)
             echo ""
             echo "╔══════════════════════════════════════════════════════════════╗"
-            echo "║  HyPrism requires WebKit2GTK 4.1                            ║"
+            echo "║  HyVanila requires WebKit2GTK 4.1                            ║"
             echo "╠══════════════════════════════════════════════════════════════╣"
             echo "║  OPTION 1 (Recommended): Use Flatpak                        ║"
-            echo "║  Download HyPrism.flatpak from the same release.            ║"
+            echo "║  Download HyVanila.flatpak from the same release.            ║"
             echo "║  It bundles all dependencies - no setup required!           ║"
             echo "║                                                              ║"
             echo "║  OPTION 2: Install WebKit on your system                    ║"
@@ -282,17 +287,17 @@ jobs:
             echo ""
             
             # GUI dialog with multiple fallbacks
-            ERROR_MSG=$'HyPrism requires WebKit2GTK 4.1 to run.\n\nOPTION 1 (Recommended): Use Flatpak\nDownload HyPrism.flatpak from the same release.\nIt bundles all dependencies - no setup required!\n\nOPTION 2: Install WebKit on your system\n• Arch:   sudo pacman -S webkit2gtk-4.1\n• Ubuntu: sudo apt install libwebkit2gtk-4.1-0\n• Fedora: sudo dnf install webkit2gtk4.1\n\nMost Linux desktops already have WebKit installed.'
+            ERROR_MSG=$'HyVanila requires WebKit2GTK 4.1 to run.\n\nOPTION 1 (Recommended): Use Flatpak\nDownload HyVanila.flatpak from the same release.\nIt bundles all dependencies - no setup required!\n\nOPTION 2: Install WebKit on your system\n• Arch:   sudo pacman -S webkit2gtk-4.1\n• Ubuntu: sudo apt install libwebkit2gtk-4.1-0\n• Fedora: sudo dnf install webkit2gtk4.1\n\nMost Linux desktops already have WebKit installed.'
 
             # Try GUI dialogs in order of preference
             if command -v zenity &> /dev/null; then
-              zenity --error --title="HyPrism - Missing Dependency" --text="$ERROR_MSG" --width=500 --no-wrap 2>/dev/null || true
+              zenity --error --title="HyVanila - Missing Dependency" --text="$ERROR_MSG" --width=500 --no-wrap 2>/dev/null || true
             elif command -v kdialog &> /dev/null; then
-              kdialog --title "HyPrism - Missing Dependency" --error "$ERROR_MSG" 2>/dev/null || true
+              kdialog --title "HyVanila - Missing Dependency" --error "$ERROR_MSG" 2>/dev/null || true
             elif command -v xmessage &> /dev/null; then
-              xmessage -center -title "HyPrism - Missing Dependency" "$ERROR_MSG" 2>/dev/null || true
+              xmessage -center -title "HyVanila - Missing Dependency" "$ERROR_MSG" 2>/dev/null || true
             elif command -v notify-send &> /dev/null; then
-              notify-send -u critical "HyPrism - Missing Dependency" "WebKit2GTK 4.1 required. Use Flatpak or install webkit2gtk-4.1" 2>/dev/null || true
+              notify-send -u critical "HyVanila - Missing Dependency" "WebKit2GTK 4.1 required. Use Flatpak or install webkit2gtk-4.1" 2>/dev/null || true
             fi
             
             # Wait a moment for user to see the message before exiting
@@ -300,23 +305,23 @@ jobs:
             exit 1
           fi
           
-          # Launch HyPrism
-          exec "${HERE}/usr/bin/HyPrism" "$@"
+          # Launch HyVanila
+          exec "${HERE}/usr/bin/HyVanila" "$@"
           APPRUN
           chmod +x HyPrism.AppDir/AppRun
           
           # Build AppImage with ARCH set
-          ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyPrism.AppDir HyPrism-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool --appimage-extract-and-run HyVanila.AppDir HyVanila-x86_64.AppImage
           
           # Replace binary with AppImage
           rm -rf build/bin/*
-          mv HyPrism-x86_64.AppImage build/bin/
+          mv HyVanila-x86_64.AppImage build/bin/
           
           # Also create a tar.gz for systems where AppImage doesn't work
-          cd HyPrism.AppDir/usr/bin
-          tar -czvf ../../../HyPrism-linux-x86_64.tar.gz HyPrism
+          cd HyVanila.AppDir/usr/bin
+          tar -czvf ../../../HyVanila-linux-x86_64.tar.gz HyVanila
           cd ../../..
-          mv HyPrism-linux-x86_64.tar.gz build/bin/
+          mv HyVanila-linux-x86_64.tar.gz build/bin/
 
       - name: Build Flatpak (Linux)
         if: matrix.platform == 'linux'
@@ -347,26 +352,26 @@ jobs:
           # Prepare all files in the flatpak directory
           echo "Preparing files..."
           # Use the webkit40 binary for Flatpak (older distro compatibility)
-          cp /tmp/HyPrism-flatpak-binary flatpak/HyPrism
-          chmod +x flatpak/HyPrism
+          cp /tmp/HyVanila-flatpak-binary flatpak/HyVanila
+          chmod +x flatpak/HyVanila
           
           # Resize icon to 512x512 for Flatpak (max allowed size)
           echo "Resizing icon to 512x512..."
-          convert build/appicon.png -resize 512x512 flatpak/dev.hyprism.HyPrism.png || {
+          convert build/appicon.png -resize 512x512 flatpak/dev.hyvanila.HyVanila.png || {
             echo "ImageMagick not found, trying with sips..."
-            sips -z 512 512 build/appicon.png --out flatpak/dev.hyprism.HyPrism.png
+            sips -z 512 512 build/appicon.png --out flatpak/dev.hyvanila.HyVanila.png
           }
           
           # Verify all required files exist
           echo "Verifying files..."
-          ls -lh flatpak/HyPrism
-          ls -lh flatpak/dev.hyprism.HyPrism.png
-          ls -lh flatpak/dev.hyprism.HyPrism.desktop
-          ls -lh flatpak/dev.hyprism.HyPrism.metainfo.xml
-          ls -lh flatpak/dev.hyprism.HyPrism.json
+          ls -lh flatpak/HyVanila
+          ls -lh flatpak/dev.hyvanila.HyVanila.png
+          ls -lh flatpak/dev.hyvanila.HyVanila.desktop
+          ls -lh flatpak/dev.hyvanila.HyVanila.metainfo.xml
+          ls -lh flatpak/dev.hyvanila.HyVanila.json
           
           # Test that binary is executable
-          file flatpak/HyPrism
+          file flatpak/HyVanila
           
           # Build the Flatpak
           echo "=========================================="
@@ -380,10 +385,10 @@ jobs:
             --repo=repo \
             --install-deps-from=flathub \
             builddir \
-            dev.hyprism.HyPrism.json
+            dev.hyvanila.HyVanila.json
           
           echo "Creating Flatpak bundle..."
-          flatpak build-bundle repo HyPrism.flatpak dev.hyprism.HyPrism
+          flatpak build-bundle repo HyVanila.flatpak dev.hyvanila.HyVanila
           
           # Verify bundle was created and has content
           if [ ! -f HyPrism.flatpak ]; then
@@ -399,10 +404,10 @@ jobs:
             exit 1
           fi
           
-          mv HyPrism.flatpak ../build/bin/
+          mv HyVanila.flatpak ../build/bin/
           
           # Verify it was moved
-          ls -lh ../build/bin/HyPrism.flatpak
+          ls -lh ../build/bin/HyVanila.flatpak
           
           # Clean up
           rm -f HyPrism dev.hyprism.HyPrism.png
@@ -415,7 +420,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HyPrism-${{ matrix.name }}
+          name: HyVanila-${{ matrix.name }}
           path: build/bin/*
           
   release:
@@ -473,15 +478,15 @@ jobs:
             "linux": {
               "amd64": {
                 "launcher": {
-                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/$TAG_NAME/HyPrism-x86_64.AppImage",
+                  "url": "https://github.com/7osteradev/HyVanila/releases/download/$TAG_NAME/HyVanila-x86_64.AppImage",
                   "sha256": ""
                 },
                 "tarball": {
-                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/$TAG_NAME/HyPrism-linux-x86_64.tar.gz",
+                  "url": "https://github.com/7osteradev/HyVanila/releases/download/$TAG_NAME/HyVanila-linux-x86_64.tar.gz",
                   "sha256": ""
                 },
                 "flatpak": {
-                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/$TAG_NAME/HyPrism.flatpak",
+                  "url": "https://github.com/7osteradev/HyVanila/releases/download/$TAG_NAME/HyVanila.flatpak",
                   "sha256": ""
                 }
               }
@@ -489,7 +494,7 @@ jobs:
             "windows": {
               "amd64": {
                 "launcher": {
-                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/$TAG_NAME/HyPrism.exe",
+                  "url": "https://github.com/7osteradev/HyVanila/releases/download/$TAG_NAME/HyVanila-Portable.exe",
                   "sha256": ""
                 }
               }
@@ -503,7 +508,7 @@ jobs:
               },
               "arm64": {
                 "launcher": {
-                  "url": "https://github.com/yyyumeniku/HyPrism/releases/download/$TAG_NAME/HyPrism-macOS-arm64.dmg",
+                  "url": "https://github.com/7osteradev/HyVanila/releases/download/$TAG_NAME/HyVanila-macOS-arm64.dmg",
                   "sha256": ""
                 }
               }
@@ -519,14 +524,14 @@ jobs:
           tag_name: ${{ steps.version.outputs.tag_name }}
           prerelease: ${{ steps.version.outputs.is_prerelease }}
           body: |
-            ## HyPrism ${{ steps.version.outputs.release_name }}
+            ## HyVanila ${{ steps.version.outputs.release_name }}
             
             ${{ steps.version.outputs.is_prerelease == 'true' && '⚠️ This is a pre-release nightly build for testing.' || '🎉 Stable release' }}
             
             ### Installation
-            - **Windows**: Download `HyPrism.exe`
-            - **macOS**: Download `HyPrism-macOS-arm64.dmg`
-            - **Linux**: Download `HyPrism.flatpak` (recommended) or `HyPrism-x86_64.AppImage`
+            - **Windows**: Download \`HyVanila-Portable.exe\`
+            - **macOS**: Download \`HyVanila-macOS-arm64.dmg\`
+            - **Linux**: Download \`HyVanila.flatpak\` (recommended) or \`HyVanila-x86_64.AppImage\`
             
             ### Changes
             See commit history for details.

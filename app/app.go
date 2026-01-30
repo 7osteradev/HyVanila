@@ -117,7 +117,7 @@ func (a *App) SelectInstanceDirectory() (string, error) {
 	}
 	
 	// Verify the directory is writable (important for external drives)
-	testFile := filepath.Join(selectedDir, ".hyprism-test")
+	testFile := filepath.Join(selectedDir, ".hyvanila-test")
 	if err := os.WriteFile(testFile, []byte("test"), 0644); err != nil {
 		return "", fmt.Errorf("directory is not writable: %w\n\nPlease check:\n• Drive is not read-only\n• You have write permissions\n• Drive has free space", err)
 	}

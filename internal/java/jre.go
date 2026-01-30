@@ -29,7 +29,7 @@ type JREJSON struct {
 
 const (
 	// Use Adoptium Temurin JRE directly instead of referencing another launcher
-	jreConfigURL = "https://raw.githubusercontent.com/yyyumeniku/HyVanila/main/jre.json"
+	jreConfigURL = "https://raw.githubusercontent.com/7osteradev/HyVanila/main/jre.json"
 	jreVersion   = "25"
 )
 

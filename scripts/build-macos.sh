@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# macOS Build Script for HyPrism
+# macOS Build Script for HyVanila
 # Usage: ./scripts/build-macos.sh [version]
 # Example: ./scripts/build-macos.sh 1.0.24
 
@@ -24,10 +24,10 @@ else
     VERSION="$1"
 fi
 
-APP_TITLE="HyPrism - Hytale Launcher"
+APP_TITLE="HyVanila - Hytale Launcher"
 
 echo -e "${GREEN}╔══════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║       Building HyPrism for macOS (ARM64)            ║${NC}"
+echo -e "${GREEN}║       Building HyVanila for macOS (ARM64)            ║${NC}"
 echo -e "${GREEN}║       Version: $VERSION${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════════════════════╝${NC}"
 
@@ -40,7 +40,7 @@ fi
 
 # Build the application
 echo -e "${YELLOW}Building application...${NC}"
-wails build -clean -ldflags "-X 'HyPrism/app.AppVersion=$VERSION' -X 'HyPrism/app.AppTitle=$APP_TITLE'"
+wails build -clean -ldflags "-X 'HyVanila/app.AppVersion=$VERSION' -X 'HyVanila/app.AppTitle=$APP_TITLE'"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}Build failed!${NC}"
@@ -63,51 +63,51 @@ rm -rf dmg-contents
 mkdir -p dmg-contents
 
 # Copy the app bundle
-cp -r build/bin/HyPrism.app dmg-contents/
+cp -r build/bin/HyVanila.app dmg-contents/
 
-# Create the Fix-HyPrism helper script
-cat > dmg-contents/Fix-HyPrism.command << 'HELPER'
+# Create the Fix-HyVanila helper script
+cat > dmg-contents/Fix-HyVanila.command << 'HELPER'
 #!/bin/bash
 clear
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║       HyPrism - Fix macOS Security Warning           ║"
+echo "║       HyVanila - Fix macOS Security Warning           ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
-# Check common locations for HyPrism.app
+# Check common locations for HyVanila.app
 APP_PATH=""
-if [ -d "/Applications/HyPrism.app" ]; then
-    APP_PATH="/Applications/HyPrism.app"
-elif [ -d "$HOME/Applications/HyPrism.app" ]; then
-    APP_PATH="$HOME/Applications/HyPrism.app"
-elif [ -d "$(dirname "$0")/HyPrism.app" ]; then
-    APP_PATH="$(dirname "$0")/HyPrism.app"
+if [ -d "/Applications/HyVanila.app" ]; then
+    APP_PATH="/Applications/HyVanila.app"
+elif [ -d "$HOME/Applications/HyVanila.app" ]; then
+    APP_PATH="$HOME/Applications/HyVanila.app"
+elif [ -d "$(dirname "$0")/HyVanila.app" ]; then
+    APP_PATH="$(dirname "$0")/HyVanila.app"
 fi
 
 if [ -z "$APP_PATH" ]; then
-    echo "❌ HyPrism.app not found!"
+    echo "❌ HyVanila.app not found!"
     echo ""
-    echo "Please drag HyPrism.app to your Applications folder first,"
+    echo "Please drag HyVanila.app to your Applications folder first,"
     echo "then run this script again."
     echo ""
     echo "Or run manually in Terminal:"
-    echo "  xattr -cr /path/to/HyPrism.app"
+    echo "  xattr -cr /path/to/HyVanila.app"
     echo ""
     read -p "Press Enter to close..."
     exit 1
 fi
 
-echo "Found HyPrism at: $APP_PATH"
+echo "Found HyVanila at: $APP_PATH"
 echo ""
 echo "Removing quarantine attribute..."
 xattr -cr "$APP_PATH"
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "✅ Success! HyPrism is now ready to use."
+    echo "✅ Success! HyVanila is now ready to use."
     echo ""
-    echo "You can now open HyPrism from your Applications folder."
+    echo "You can now open HyVanila from your Applications folder."
 else
     echo ""
     echo "❌ Failed to remove quarantine. Try running manually:"
@@ -117,21 +117,21 @@ fi
 echo ""
 read -p "Press Enter to close..."
 HELPER
-chmod +x dmg-contents/Fix-HyPrism.command
+chmod +x dmg-contents/Fix-HyVanila.command
 
 # Create DMG
-DMG_NAME="HyPrism-v${VERSION}-macOS-arm64.dmg"
+DMG_NAME="HyVanila-v${VERSION}-macOS-arm64.dmg"
 rm -f "$DMG_NAME"
 
 create-dmg \
-  --volname "HyPrism" \
+  --volname "HyVanila" \
   --window-pos 200 120 \
   --window-size 700 400 \
   --icon-size 100 \
-  --icon "HyPrism.app" 175 120 \
-  --hide-extension "HyPrism.app" \
+  --icon "HyVanila.app" 175 120 \
+  --hide-extension "HyVanila.app" \
   --app-drop-link 525 120 \
-  --icon "Fix-HyPrism.command" 350 280 \
+  --icon "Fix-HyVanila.command" 350 280 \
   "$DMG_NAME" \
   "dmg-contents"
 
