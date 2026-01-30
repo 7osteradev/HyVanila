@@ -21,5 +21,6 @@ Downloads are available in releases
 ## Platform Support
 - Windows (fully supported)
 - macOS (ARM64)
-- Linux (Flatpak recommended, AppImage has dependency issues)
-  - For Arch Users use https://aur.archlinux.org/packages/hyvanila-git (paru / yay -S hyvanila-git). DO NOT USE UPDATE BUTTON IN LAUNCHER! UPDATE ONLY USE AUR REPO!
+- 
+## Credits
+Sanasol for maintaining and creating the auth server (https://github.com/sanasol/hytale-auth-server)
