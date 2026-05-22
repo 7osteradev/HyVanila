@@ -4,7 +4,7 @@
 
 # HyVanila
 
-[![Release](https://img.shields.io/github/v/release/7osteradev/HyVanila?style=for-the-badge)](https://github.com/7osteradev/HyVanila/releases)](https://github.com/7osteradev/HyVanila/releases)
+[![Release](https://img.shields.io/github/v/release/7osteradev/HyVanila?style=for-the-badge)](https://github.com/7osteradev/HyVanila/releases)]
 [![Website](https://img.shields.io/badge/Website-hyvanila-207e5c?style=for-the-badge&logo=firefox)](https://github.com/7osteradev/HyVanila)
 
 A multiplatform Hytale launcher with mod manager and more!
